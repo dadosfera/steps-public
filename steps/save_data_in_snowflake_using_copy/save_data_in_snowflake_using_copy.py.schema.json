@@ -5,16 +5,16 @@
     "type": "object",
     "properties": {
       "incoming_variable_name": {
-        "default": "Type of run of the step",
+        "description": "The name of the variable that contains the data that will be copied to Snowflake",
         "type": "string"
       },
       "secret_id": {
         "type": "string",
-        "description": "The name of the table"
+        "description": "The secret id that will be used to retrieve the snowflake credentials"
       },
       "table_identifier": {
         "type": "string",
-        "description": "The name of the table"
+        "description": "The name of the table. Ex: PUBLIC.TABLE_NAME"
       }
     },
     "required": ["incoming_variable_name","table_identifier"]
