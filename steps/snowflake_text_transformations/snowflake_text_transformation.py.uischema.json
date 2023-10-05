@@ -1,0 +1,45 @@
+{
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/output_variable_name",
+            "label": "Output Variable Name"
+          }]
+      },
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/secret_id",
+            "label": "Secrets Manager Secret ID"
+          }]
+      },
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/incoming_variable_name",
+            "label": "Incoming Variable Name"
+          }
+        ]
+      },
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/text_transformations",
+            "label": "Text Transformations"
+          }
+        ]
+      }
+    ]
+
+}
+

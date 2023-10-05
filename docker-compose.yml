@@ -1,0 +1,17 @@
+version: '3'
+services:
+  dadosfera_steps:
+    privileged: true
+    image: dadosfera_steps
+    build:
+      context: .
+      args:
+        - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+        - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+        - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+    env_file:
+      - local.env
+    volumes:
+      - ./steps:/project-dir/steps
+      - ./output:/project-dir/output
+      - ~/.aws/credentials:/root/.aws/credentials:ro

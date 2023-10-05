@@ -1,0 +1,42 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "HorizontalLayout",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/incoming_variable_name",
+          "label": "Incoming Variable Name"
+        }]
+    },
+    {
+      "type": "HorizontalLayout",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/bucket_name",
+          "label": "Target Bucket"
+        }]
+    },
+    {
+      "type": "HorizontalLayout",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/prefix",
+          "label": "Target Prefix"
+        }]
+    },
+    {
+      "type": "HorizontalLayout",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/file_extension",
+          "label": "File extension of the output"
+        }]
+    }
+  ]
+
+}

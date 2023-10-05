@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Get data from Snowflake",
+  "description": "Schema for input validation to the function apply_text_transformations",
+  "type": "object",
+  "properties": {
+  "secret_id": {
+      "type": "string",
+      "description": "The id of the secret"
+  },
+  "text_transformations": {
+    "type": "array",
+    "minItems": 1,
+    "items": {
+      "description": "Transformations",
+      "type": "object",
+      "properties": {
+        "column_name": {
+          "type": "string",
+          "description": "Column that should be renamed"
+        },
+        "transformation_to_apply": {
+          "type": "string",
+          "description": "Transformation To Apply",
+          "enum": [
+            "trim",
+            "lower",
+            "upper"
+          ]
+        }
+      }
+    }
+  },
+  "incoming_variable_name": {
+    "default": "Type of run of the step",
+    "type": "string"
+  },
+    "output_variable_name": {
+      "default": "The output variable name",
+      "type": "string"
+    }
+  },
+  "required": ["secret_id","incoming_variable_name","output_variable_name","text_transformations"]
+}

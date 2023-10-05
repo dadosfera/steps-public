@@ -1,0 +1,15 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "HorizontalLayout",
+      "elements": [
+        {
+          "type": "Control",
+          "scope": "#/properties/incoming_variable_name",
+          "label": "Incoming Variable Name"
+        }]
+    }
+  ]
+
+}

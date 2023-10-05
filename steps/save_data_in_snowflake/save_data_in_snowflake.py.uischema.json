@@ -1,0 +1,33 @@
+{
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/incoming_variable_name",
+            "label": "Incoming Variable Name"
+          }]
+      },
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/table_identifier",
+            "label": "Table identifier \"PUBLIC\".\"TABLE_NAME\""
+          }]
+      },
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/secret_id",
+            "label": "SecretsManager secret_id"
+          }]
+      }
+    ]
+
+}

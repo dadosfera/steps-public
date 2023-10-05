@@ -1,0 +1,22 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Save objects in snowflake",
+    "description": "Schema for input validation to the function save_objects_in_snowflake",
+    "type": "object",
+    "properties": {
+      "incoming_variable_name": {
+        "default": "Type of run of the step",
+        "type": "string"
+      },
+      "table_identifier": {
+        "type": "string",
+        "description": "The name of the table"
+      },
+      "secret_id": {
+        "type": "string",
+        "description": "The name of the table"
+      }
+    },
+    "required": ["incoming_variable_name","table_identifier","secret_id"]
+}
+

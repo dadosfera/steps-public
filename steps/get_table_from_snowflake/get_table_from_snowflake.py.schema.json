@@ -1,0 +1,23 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Get data from Snowflake",
+    "description": "Schema for input validation to the function get_data_from_snowflake",
+    "type": "object",
+    "properties": {
+    "secret_id": {
+        "type": "string",
+        "description": "The id of the secret"
+    },
+    "table_identifier": {
+        "default": "\"PUBLIC\".\"TABLE_NAME\"",
+        "type": "string",
+        "description": "The table identifier"
+      },
+      "output_variable_name": {
+        "default": "The output variable name",
+        "type": "string"
+      }
+    },
+    "required": ["secret_id","table_identifier","output_variable_name"]
+}
+

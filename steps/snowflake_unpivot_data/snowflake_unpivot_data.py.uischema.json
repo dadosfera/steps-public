@@ -1,0 +1,65 @@
+{
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/output_variable_name",
+            "label": "Output Variable Name"
+          }]
+      },
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/secret_id",
+            "label": "Secrets Manager Secret ID"
+          }]
+      },
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/incoming_variable_name",
+            "label": "Incoming Variable Name"
+          }
+        ]
+      },
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/columns_to_unpivot",
+            "label": "Columns that should be unpivoted"
+          }
+        ]
+      },
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/categorical_column_name",
+            "label": "The categorical column that will contain the name of the categories (ex: department)"
+          }
+        ]
+      },
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/numerical_column_name",
+            "label": "The numerical column that will contain value for each category (ex: Revenue)"
+          }
+        ]
+      }
+    ]
+
+}
+
