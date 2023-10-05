@@ -16,7 +16,7 @@
           {
             "type": "Control",
             "scope": "#/properties/table_identifier",
-            "label": "Table identifier \"PUBLIC\".\"TABLE_NAME\""
+            "label": "Table identifier PUBLIC.TABLE_NAME"
           }]
       },
       {
