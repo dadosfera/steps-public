@@ -1,0 +1,1 @@
+docker-compose run dadosfera_steps python /project-dir/steps/put_objects_in_s3/put_objects_in_s3.py '{"bucket_name": "dadosfera-landing-dadosferademo-prd-us-east-1-611330257153", "prefix": "uploaded_script/extracted_htmls/escriba", "input_filepath": "/project-dir/output/extract_htmls_using_files.json", "file_extension": "html"}'

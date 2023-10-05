@@ -1,0 +1,1 @@
+docker-compose run dadosfera_steps python /project-dir/steps/extract_text_from_html/extract_text_from_html.py '{"input_filepath": "/project-dir/output/get_objects_from_s3.json", "output_filepath":"/project-dir/output/extract_text_from_htmls.json"}'

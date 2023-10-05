@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Extract Text from HTML",
+  "description": "Schema for input validation to the function extract_text_from_html",
+  "type": "object",
+  "properties": {
+    "incoming_variable_name": {
+      "default": "Type of run of the step",
+      "type": "string"
+    },
+    "output_variable_name": {
+      "default": "Type of run of the step",
+      "type": "string"
+    }
+  },
+  "required": [
+    "run_type",
+    "output_variable"
+  ]
+}
