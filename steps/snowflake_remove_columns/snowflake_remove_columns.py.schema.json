@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Get data from Snowflake",
+  "description": "Schema for input validation to the function snowflake_remove_columns",
+  "type": "object",
+  "properties": {
+  "secret_id": {
+      "type": "string",
+      "description": "The id of the secret"
+  },
+  "columns_to_remove": {
+    "type": "array",
+    "minItems": 1,
+    "items": {
+      "description": "columns_to_remove",
+      "type": "string"
+    }
+  },
+  "incoming_variable_name": {
+    "default": "Type of run of the step",
+    "type": "string"
+  },
+    "output_variable_name": {
+      "default": "The output variable name",
+      "type": "string"
+    }
+  },
+  "required": ["secret_id","incoming_variable_name","output_variable_name","columns_to_remove"]
+}

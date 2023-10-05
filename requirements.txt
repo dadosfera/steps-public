@@ -1,0 +1,9 @@
+boto3
+bs4
+awscli
+chardet
+requests
+pdf2image
+pytesseract
+openai
+deeplake

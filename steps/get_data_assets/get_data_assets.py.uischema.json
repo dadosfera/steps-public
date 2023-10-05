@@ -1,0 +1,34 @@
+{
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/maestro_base_url",
+            "label": "The Base URL from Maestro API"
+          }
+        ]
+      },
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/output_variable_name",
+            "label": "Output Variable Name"
+          }]
+      },
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/additional_params",
+            "label": "Additional Params provided to filter the assets"
+          }
+        ]
+      }
+    ]
+  }

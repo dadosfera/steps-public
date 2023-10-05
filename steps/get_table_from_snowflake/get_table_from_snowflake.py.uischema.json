@@ -1,0 +1,34 @@
+{
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/output_variable_name",
+            "label": "Output Variable Name"
+          }]
+      },
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/table_identifier",
+            "label": "Table Identifier"
+          }]
+      },
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/secret_id",
+            "label": "Secrets Manager Secret ID"
+          }]
+      }
+    ]
+
+}
+
