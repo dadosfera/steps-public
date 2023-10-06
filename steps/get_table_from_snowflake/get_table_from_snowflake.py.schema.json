@@ -20,4 +20,3 @@
     },
     "required": ["secret_id","table_identifier","output_variable_name"]
 }
-

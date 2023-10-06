@@ -68,7 +68,7 @@ def script_handler():
     maestro_base_url = config['maestro_base_url']
     output_variable_name = config['output_variable_name']
     additional_params = config.get('additional_params', {})
-    
+
     try:
         DADOSFERA_USERNAME = os.environ['DADOSFERA_USERNAME']
         DADOSFERA_PASSWORD = os.environ['DADOSFERA_PASSWORD']
