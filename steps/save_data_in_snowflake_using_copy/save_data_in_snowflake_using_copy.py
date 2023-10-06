@@ -26,18 +26,18 @@ def save_objects_in_snowflake_using_copy(
         session.use_schema('PUBLIC')
         dfs = [pd.DataFrame(_object['file_content']) for _object in objects]
         result_pdf = reduce(lambda x, y: pd.concat([x, y], axis=0), dfs)
-        result_pdf.to_json('temp.json', lines=True, orient='records')
+        result_pdf.to_parquet('temp', engine='fastparquet')
 
         transformed_tbl_identifier = table_identifier.replace('"', '').replace('.', '_')
         create_temp_stage = "create or replace temporary stage my_internal_stage"
         session.sql(create_temp_stage).collect()
 
-        put_command = f"PUT file://temp.json @my_internal_stage/{transformed_tbl_identifier}"
+        put_command = f"PUT file://temp @my_internal_stage/{transformed_tbl_identifier}"
         session.sql(put_command).collect()
-        result_df = session.read.option("INFER_SCHEMA", "true").json(f"@my_internal_stage/{transformed_tbl_identifier}")
+        result_df = session.read.parquet(f"@my_internal_stage/{transformed_tbl_identifier}")
         result_df.write.mode('overwrite').save_as_table(table_identifier)
     finally:
-        os.remove('temp.json')
+        os.remove('temp')
 
 def orchest_handler():
     import orchest
