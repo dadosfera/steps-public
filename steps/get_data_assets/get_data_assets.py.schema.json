@@ -1,7 +1,14 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "Get Data Assets",
-    "description": "Schema for input validation to the function",
+    "definitions": {
+        "output_variable_name": {
+            "type": "string",
+            "description": "The name of the variable where the results should be stored"
+        },
+        "output_filepath": {
+            "type": "string",
+            "description": "The name of the file that will store the results from the step"
+        }
+    },
     "type": "object",
     "properties": {
         "maestro_base_url": {
@@ -12,9 +19,13 @@
                 "https://maestro.stg.dadosfera.ai"
             ]
         },
-        "output_variable_name": {
+        "output_type": {
             "description": "The name of the variable that will store the result",
-            "type": "string"
+            "type": "string",
+            "enum": [
+                "to_outgoing_variable",
+                "to_filepath"
+            ]
         },
         "additional_params": {
             "type": "array",
@@ -36,6 +47,6 @@
     },
     "required": [
         "maestro_base_url",
-        "output_variable_name"
+        "output_type"
     ]
 }

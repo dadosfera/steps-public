@@ -1,34 +1,85 @@
 {
-    "type": "VerticalLayout",
-    "elements": [
-      {
-        "type": "HorizontalLayout",
-        "elements": [
-          {
-            "type": "Control",
-            "scope": "#/properties/maestro_base_url",
-            "label": "The Base URL from Maestro API"
+  "type": "Categorization",
+  "elements": [
+    {
+      "type": "Category",
+      "label": "API Settings",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/maestro_base_url",
+              "label": "The base url of the Maestro API"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/additional_params",
+              "label": "Additional Params provided to filter the assets"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/output_type",
+              "label": "Output Type"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Category",
+      "label": "Output Configuration",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/definitions/output_filepath",
+              "label": "Output Filepath"
+            }
+          ],
+          "rule": {
+            "effect": "SHOW",
+            "condition": {
+              "scope": "#/properties/output_type",
+              "schema": {
+                "const": "to_filepath"
+              }
+            }
           }
-        ]
-      },
-      {
-        "type": "HorizontalLayout",
-        "elements": [
-          {
-            "type": "Control",
-            "scope": "#/properties/output_variable_name",
-            "label": "Output Variable Name"
-          }]
-      },
-      {
-        "type": "HorizontalLayout",
-        "elements": [
-          {
-            "type": "Control",
-            "scope": "#/properties/additional_params",
-            "label": "Additional Params provided to filter the assets"
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/definitions/output_variable_name",
+              "label": "Output Variable Name"
+            }
+          ],
+          "rule": {
+            "effect": "SHOW",
+            "condition": {
+              "scope": "#/properties/output_type",
+              "schema": {
+                "const": "to_outgoing_variable"
+              }
+            }
           }
-        ]
-      }
-    ]
-  }
+        }
+      ]
+    }
+  ]
+}
