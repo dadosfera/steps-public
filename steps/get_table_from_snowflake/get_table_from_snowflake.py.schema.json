@@ -1,22 +1,45 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "Get data from Snowflake",
-    "description": "Schema for input validation to the function get_data_from_snowflake",
-    "type": "object",
-    "properties": {
+  "definitions": {
+    "incoming_variable_name": {
+      "type": "string",
+      "description": "The name of the incoming variable name"
+    },
+    "input_filepath": {
+      "type": "string",
+      "description": "The input filepath that will be read"
+    },
+    "output_variable_name": {
+      "type": "string",
+      "description": "The output variable name where the data will be stored"
+    },
+    "output_filepath": {
+      "type": "string",
+      "description": "The name of the value where the data will be stored"
+    }
+  },
+  "type": "object",
+  "properties": {
     "secret_id": {
-        "type": "string",
-        "description": "The id of the secret"
+      "type": "string",
+      "description": "The Secret Id From SecretsManager"
     },
     "table_identifier": {
-        "default": "\"PUBLIC\".\"TABLE_NAME\"",
-        "type": "string",
-        "description": "The table identifier"
-      },
-      "output_variable_name": {
-        "default": "The output variable name",
-        "type": "string"
-      }
+      "type": "string",
+      "description": "The table identifier of the table. PUBLIC.TABLE_NAME"
     },
-    "required": ["secret_id","table_identifier","output_variable_name"]
+    "output_type": {
+      "type": "string",
+      "description": "The output_type",
+      "enum": [
+        "to_outgoing_variable",
+        "to_filepath"
+      ]
+    }
+  },
+  "required": [
+    "secret_id",
+    "input_type",
+    "output_type",
+    "table_identifier"
+  ]
 }
