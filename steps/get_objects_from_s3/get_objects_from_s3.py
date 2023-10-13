@@ -40,12 +40,19 @@ def orchest_handler():
     import orchest
     bucket_name = orchest.get_step_param('bucket_name')
     prefix = orchest.get_step_param('prefix')
-    output_variable_name = orchest.get_step_param('output_variable_name')
+    output_type = orchest.get_step_param('output_type')
     if prefix is None:
         prefix = ''
 
     objects = get_objects_from_s3(bucket_name=bucket_name, prefix=prefix)
-    orchest.output(data=objects, name=output_variable_name)
+
+    if output_type == 'to_outgoing_variable':
+        output_variable_name = orchest.get_step_param('output_variable_name')
+        orchest.output(data=objects, name=output_variable_name)
+    elif output_type == 'to_filepath':
+        output_filepath = orchest.get_step_param('output_filepath')
+        with open(output_filepath,'w') as f:
+            f.write(json.dumps(objects))
 
 def script_handler():
     if len(sys.argv) != 2:

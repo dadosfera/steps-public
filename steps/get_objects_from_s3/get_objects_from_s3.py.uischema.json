@@ -1,33 +1,85 @@
 {
-  "type": "VerticalLayout",
+  "type": "Categorization",
   "elements": [
     {
-      "type": "HorizontalLayout",
+      "type": "Category",
+      "label": "Main Configuration",
       "elements": [
         {
-          "type": "Control",
-          "scope": "#/properties/output_variable_name",
-          "label": "Output Variable Name"
-        }]
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/bucket_name",
+              "label": "Bucket Name"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/prefix",
+              "label": "Prefix"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/output_type",
+              "label": "Output Type"
+            }
+          ]
+        }
+      ]
     },
     {
-      "type": "HorizontalLayout",
+      "type": "Category",
+      "label": "Output Configuration",
       "elements": [
         {
-          "type": "Control",
-          "scope": "#/properties/bucket_name",
-          "label": "Bucket Name"
-        }]
-    },
-    {
-      "type": "HorizontalLayout",
-      "elements": [
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/definitions/output_filepath",
+              "label": "Output Filepath"
+            }
+          ],
+          "rule": {
+            "effect": "SHOW",
+            "condition": {
+              "scope": "#/properties/output_type",
+              "schema": {
+                "const": "to_filepath"
+              }
+            }
+          }
+        },
         {
-          "type": "Control",
-          "scope": "#/properties/prefix",
-          "label": "Bucket Prefix"
-        }]
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/definitions/output_variable_name",
+              "label": "Output Variable Name"
+            }
+          ],
+          "rule": {
+            "effect": "SHOW",
+            "condition": {
+              "scope": "#/properties/output_type",
+              "schema": {
+                "const": "to_outgoing_variable"
+              }
+            }
+          }
+        }
+      ]
     }
   ]
-
 }
