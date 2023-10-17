@@ -20,16 +20,6 @@
           "elements": [
             {
               "type": "Control",
-              "scope": "#/properties/additional_params",
-              "label": "Additional Params provided to filter the assets"
-            }
-          ]
-        },
-        {
-          "type": "HorizontalLayout",
-          "elements": [
-            {
-              "type": "Control",
               "scope": "#/properties/output_type",
               "label": "Output Type"
             }
