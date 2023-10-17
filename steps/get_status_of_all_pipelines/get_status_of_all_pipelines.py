@@ -4,7 +4,7 @@ import os
 import sys
 import json
 import logging
-from dadosfera.services.maestro import get_data_assets, get_token
+from dadosfera.services.maestro import get_status_of_all_pipelines, get_token
 
 ORCHEST_STEP_UUID = os.environ.get("ORCHEST_STEP_UUID")
 
@@ -17,15 +17,7 @@ def orchest_handler():
     import orchest
 
     maestro_base_url = orchest.get_step_param('maestro_base_url')
-    additional_params_array = orchest.get_step_param('additional_params')
     output_type = orchest.get_step_param('output_type')
-
-    if additional_params_array is not None:
-        additional_params = {
-            param['key']: param['value'] for param in additional_params_array
-        }
-    else:
-        additional_params = {}
 
     try:
         DADOSFERA_USERNAME = os.environ['DADOSFERA_USERNAME']
@@ -42,31 +34,20 @@ def orchest_handler():
         email=DADOSFERA_USERNAME,
         password=DADOSFERA_PASSWORD,
     )
-    data_assets = get_data_assets(
+    pipelines = get_status_of_all_pipelines(
         maestro_base_url=maestro_base_url,
-        token=token,
-        additional_params=additional_params
+        token=token
     )
 
     if output_type == 'to_outgoing_variable':
         output_variable_name = orchest.get_step_param('output_variable_name')
         output = [
             {
-                'key': 'data_assets',
-                'file_name': 'data_assets',
-                'file_content': data_assets
+                'key': 'pipelines',
+                'file_name': 'pipelines',
+                'file_content': pipelines
             }
-        ]
-        orchest.output(data=output, name=output_variable_name)
-    elif output_type == 'to_filepath':
-        output_filepath = orchest.get_step_param('output_filepath')
-        df = pd.DataFrame(data_assets)
-        df.to_parquet(output_filepath, 'fastparquet')
-
-def script_handler():
-    if len(sys.argv) != 2:
-        raise Exception("Please provide the required configuration in JSON format")
-    config_json = sys.argv[1]
+        ]pipelines_status
     config = json.loads(config_json)
 
     maestro_base_url = config['maestro_base_url']
@@ -88,13 +69,12 @@ def script_handler():
         email=DADOSFERA_USERNAME,
         password=DADOSFERA_PASSWORD,
     )
-    data_assets = get_data_assets(
+    pipelines = get_status_of_all_pipelines(
         maestro_base_url=maestro_base_url,
-        token=token,
-        additional_params=additional_params
+        token=token
     )
 
-    df = pd.DataFrame(data_assets)
+    df = pd.DataFrame(pipelines)
     df.to_parquet(output_filepath, 'fastparquet')
 
 if __name__ == "__main__":

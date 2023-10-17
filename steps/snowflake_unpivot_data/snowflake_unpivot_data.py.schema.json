@@ -1,37 +1,67 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Get data from Snowflake",
-  "description": "Schema for input validation to the function get_data_from_snowflake",
+  "definitions": {
+    "incoming_variable_name": {
+      "type": "string",
+      "description": "The name of the incoming variable name"
+    },
+    "input_filepath": {
+      "type": "string",
+      "description": "The input filepath that will be read"
+    },
+    "output_variable_name": {
+      "type": "string",
+      "description": "The output variable name where the data will be stored"
+    },
+    "output_filepath": {
+      "type": "string",
+      "description": "The name of the value where the data will be stored"
+    }
+  },
   "type": "object",
   "properties": {
-  "secret_id": {
+    "secret_id": {
       "type": "string",
-      "description": "The id of the secret"
-  },
-  "categorical_column_name": {
-    "description": "The categorical column that will contain the name of the categories (ex: department)",
-    "type": "string"
-  },
-  "numerical_column_name": {
-    "default": "The numerical column that will contain value for each category (ex: Revenue)",
-    "type": "string"
-  },
-  "columns_to_unpivot": {
-    "type": "array",
-    "minItems": 1,
-    "items": {
-      "description": "The columns that should be unpivoted",
+      "description": "The Secret Id From SecretsManager"
+    },
+    "categorical_column_name": {
+      "description": "The categorical column that will contain the name of the categories (ex: department)",
       "type": "string"
+    },
+    "numerical_column_name": {
+      "default": "The numerical column that will contain value for each category (ex: Revenue)",
+      "type": "string"
+    },
+    "columns_to_unpivot": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "description": "The columns that should be unpivoted",
+        "type": "string"
+      }
+    },
+    "input_type": {
+      "type": "string",
+      "description": "The secret id that will be used to retrieve the snowflake credentials",
+      "enum": [
+        "from_incoming_variable",
+        "from_filepath"
+      ]
+    },
+    "output_type": {
+      "type": "string",
+      "description": "The output_type",
+      "enum": [
+        "to_outgoing_variable",
+        "to_filepath"
+      ]
     }
   },
-  "incoming_variable_name": {
-    "default": "Type of run of the step",
-    "type": "string"
-  },
-    "output_variable_name": {
-      "default": "The output variable name",
-      "type": "string"
-    }
-  },
-  "required": ["secret_id","incoming_variable_name","output_variable_name","columns_to_unpivot"]
+  "required": [
+    "secret_id",
+    "categorical_column_name",
+    "numerical_column_name",
+    "columns_to_unpivot",
+    "input_type",
+    "output_type"
+  ]
 }

@@ -3,15 +3,15 @@
   "elements": [
     {
       "type": "Category",
-      "label": "Main Configuration",
+      "label": "API Settings",
       "elements": [
         {
           "type": "HorizontalLayout",
           "elements": [
             {
               "type": "Control",
-              "scope": "#/properties/secret_id",
-              "label": "Secret Id"
+              "scope": "#/properties/maestro_base_url",
+              "label": "The base url of the Maestro API"
             }
           ]
         },
@@ -22,16 +22,6 @@
               "type": "Control",
               "scope": "#/properties/output_type",
               "label": "Output Type"
-            }
-          ]
-        },
-        {
-          "type": "HorizontalLayout",
-          "elements": [
-            {
-              "type": "Control",
-              "scope": "#/properties/table_identifier",
-              "label": "Table Identifier (ex: PUBLIC.TABLE_NAME)"
             }
           ]
         }

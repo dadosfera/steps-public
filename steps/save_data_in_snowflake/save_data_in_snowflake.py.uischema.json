@@ -1,33 +1,85 @@
 {
-    "type": "VerticalLayout",
-    "elements": [
-      {
-        "type": "HorizontalLayout",
-        "elements": [
-          {
-            "type": "Control",
-            "scope": "#/properties/incoming_variable_name",
-            "label": "Incoming Variable Name"
-          }]
-      },
-      {
-        "type": "HorizontalLayout",
-        "elements": [
-          {
-            "type": "Control",
-            "scope": "#/properties/table_identifier",
-            "label": "Table identifier \"PUBLIC\".\"TABLE_NAME\""
-          }]
-      },
-      {
-        "type": "HorizontalLayout",
-        "elements": [
-          {
-            "type": "Control",
-            "scope": "#/properties/secret_id",
-            "label": "SecretsManager secret_id"
-          }]
-      }
-    ]
-
+  "type": "Categorization",
+  "elements": [
+    {
+      "type": "Category",
+      "label": "Main Configuration",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/secret_id",
+              "label": "SecretsManager secret_id"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/table_identifier",
+              "label": "Table identifier PUBLIC.TABLE_NAME"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/input_type",
+              "label": "Input Type"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Category",
+      "label": "Input Configuration",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/definitions/input_filepath",
+              "label": "Input Filepath"
+            }
+          ],
+          "rule": {
+            "effect": "SHOW",
+            "condition": {
+              "scope": "#/properties/input_type",
+              "schema": {
+                "const": "from_filepath"
+              }
+            }
+          }
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/definitions/incoming_variable_name",
+              "label": "Incoming variable name"
+            }
+          ],
+          "rule": {
+            "effect": "SHOW",
+            "condition": {
+              "scope": "#/properties/input_type",
+              "schema": {
+                "const": "from_incoming_variable"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
 }

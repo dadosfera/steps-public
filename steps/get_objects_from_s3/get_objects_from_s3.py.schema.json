@@ -1,22 +1,36 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Get Object from S3",
-  "description": "Schema for input validation to the function get_object_from_s3",
+  "definitions": {
+    "output_variable_name": {
+      "type": "string",
+      "description": "The output variable name where the data will be stored"
+    },
+    "output_filepath": {
+      "type": "string",
+      "description": "The name of the value where the data will be stored"
+    }
+  },
   "type": "object",
   "properties": {
-    "output_variable_name": {
-      "default": "Type of run of the step",
-      "type": "string"
-    },
     "bucket_name": {
-      "default": "dadosfera-landing-dadosferademo-prd-us-east-1-611330257153",
       "type": "string",
       "description": "The name of the S3 bucket"
     },
     "prefix": {
       "type": "string",
       "description": "The key for the object within the S3 bucket"
+    },
+    "output_type": {
+      "type": "string",
+      "description": "The output_type",
+      "enum": [
+        "to_outgoing_variable",
+        "to_filepath"
+      ]
     }
   },
-  "required": ["output_variable_name","bucket_name"]
+  "required": [
+    "bucket_name",
+    "prefix",
+    "output_type"
+  ]
 }

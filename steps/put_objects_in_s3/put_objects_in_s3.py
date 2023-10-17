@@ -32,10 +32,15 @@ def put_objects_in_s3(
         else:
             key = f"{prefix}/{object_['file_name']}"
         logger.debug(f'Putting object {key} in s3')
+
+
+        if isinstance(object_['file_content'], str):
+            object_['file_content'] = object_['file_content'].encode('utf-8')
+        
         response = client.put_object(
             Bucket=bucket_name,
             Key=key,
-            Body=object_['file_content'].encode('utf-8')
+            Body=object_['file_content']
         )
 
 
@@ -51,12 +56,28 @@ def orchest_handler():
     bucket_name = orchest.get_step_param('bucket_name')
     prefix = orchest.get_step_param('prefix')
     file_extension = orchest.get_step_param('file_extension')
-    incoming_variable_name = orchest.get_step_param('incoming_variable_name')
+    input_type = orchest.get_step_param('input_type')
+    
 
     if prefix is None:
         prefix = ''
+    
+    if input_type == "from_filepath":
+        input_filepaths = orchest.get_step_param("input_filepaths")
 
-    objects = orchest.get_inputs()[incoming_variable_name]
+        objects = []
+        for input_filepath in input_filepaths:
+            with open(input_filepath) as f:
+                file_content = json.loads(f.read())
+            objects.append({
+                "file_name": input_filepath,
+                "file_content": file_content
+            })
+    
+    elif input_type == "from_incoming_variable":
+        incoming_variable_name = orchest.get_step_param("incoming_variable_name")
+        objects = orchest.get_inputs()[incoming_variable_name]
+
     put_objects_in_s3(
         objects=objects,
         bucket_name=bucket_name,

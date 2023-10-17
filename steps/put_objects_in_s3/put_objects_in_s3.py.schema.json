@@ -1,13 +1,19 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Put Objects In S3",
-  "description": "Schema for input validation to the function put_objects_in_s3",
+  "definitions": {
+    "incoming_variable_name": {
+      "type": "string",
+      "description": "The name of the incoming variable name"
+    },
+    "input_filepaths": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "description": "The input filepath that will be read"
+      }
+    }
+  },
   "type": "object",
   "properties": {
-    "incoming_variable_name": {
-      "default": "Type of run of the step",
-      "type": "string"
-    },
     "bucket_name": {
       "default": "dadosfera-landing-dadosferademo-prd-us-east-1-611330257153",
       "type": "string",
@@ -17,10 +23,16 @@
       "type": "string",
       "description": "The key for the object within the S3 bucket"
     },
-      "file_extension": {
-          "type": "string",
-          "description": "The File extension of the saved files"
-      }
-  },
-  "required": ["incoming_variable_name","bucket_name", "prefix"]
+    "file_extension": {
+      "type": "string",
+      "description": "The File extension of the saved files"
+    },
+    "input_type": {
+      "type": "string",
+      "enum": [
+        "from_incoming_variable",
+        "from_filepath"
+      ]
+    }
+  }
 }

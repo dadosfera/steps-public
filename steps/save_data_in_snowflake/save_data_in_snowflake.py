@@ -34,8 +34,17 @@ def orchest_handler():
     import orchest
     secret_id = orchest.get_step_param('secret_id')
     table_identifier = orchest.get_step_param('table_identifier')
-    incoming_variable_name = orchest.get_step_param('incoming_variable_name')
-    snowflake_queries_object = orchest.get_inputs()[incoming_variable_name]
+    input_type = orchest.get_step_param('input_type')
+    
+    if input_type == "from_filepath":
+        input_filepath = orchest.get_step_param("input_filepath")
+        with open(input_filepath) as f:
+            snowflake_queries_object = json.loads(f.read())
+
+    elif input_type == "from_incoming_variable":
+        incoming_variable_name = orchest.get_step_param("incoming_variable_name")
+        snowflake_queries_object = orchest.get_inputs()[incoming_variable_name]
+
     save_data_in_snowflake(
         secret_id=secret_id,
         table_identifier=table_identifier,
