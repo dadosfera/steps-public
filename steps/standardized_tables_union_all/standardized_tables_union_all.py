@@ -33,6 +33,7 @@ def get_union_all_query(secret_id: str, table_prefix: str) -> str:
 
 def standardized_tables_union_all(secret_id: str, view_name: str, union_all_query: str):
     session = get_snowpark_session(secret_id)
+    session.use_schema("PUBLIC")
     create_view_query = f"CREATE OR REPLACE VIEW {view_name} AS {union_all_query}"
     session.sql(create_view_query).collect()
     logger.info(f"View {view_name} created successfully.")
@@ -43,7 +44,7 @@ def orchest_handler():
     secret_id = orchest.get_step_param('secret_id')
     union_all_query = get_union_all_query(secret_id, "STANDARDIZED_")
     standardized_tables_union_all(
-        union_all_query, "VW_STANDARDIZED_MDM_BASE", union_all_query)
+        secret_id, "VW_STANDARDIZED_MDM_BASE", union_all_query)
 
 
 def script_handler():
