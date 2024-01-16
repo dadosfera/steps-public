@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Save objects in snowflake",
+  "description": "Schema for input validation to the function save_objects_in_snowflake",
+  "type": "object",
+  "properties": {
+    "secret_id": {
+      "type": "string",
+      "description": "The secret id that will be used to retrieve the snowflake credentials"
+    }
+  },
+  "required": ["secret_id"]
+}
