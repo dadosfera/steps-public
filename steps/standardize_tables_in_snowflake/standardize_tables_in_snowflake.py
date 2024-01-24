@@ -1,50 +1,131 @@
 from dadosfera.services.snowflake import get_snowpark_session
-from typing import List
-import logging
-import json
 import sys
+import json
+import logging
 import os
-
-logging.basicConfig(level=logging.INFO)
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+import pandas as pd
+from typing import Dict,  List, Optional
 
 ORCHEST_STEP_UUID = os.environ.get('ORCHEST_STEP_UUID')
 
 
-def get_union_all_query(secret_id: str, table_prefix: str) -> str:
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+
+def get_snowflake_table(
+    secret_id: str,
+    table_identifier: str
+) -> List[str]:
     session = get_snowpark_session(secret_id)
-
-    # Listar tabelas que começam com 'STANDARDIZED_'
-    query_list_tables = f"SHOW TABLES LIKE '{table_prefix}%'"
-    df_tables = session.sql(query_list_tables).collect()
-
-    # Construir a query de UNION ALL
-    query_parts = []
-    for table in df_tables:
-        table_name = table['name']
-        query_parts.append(f"SELECT * FROM {table_name}")
-
-    union_all_query = " UNION ALL ".join(query_parts)
-
-    return union_all_query
+    df = session.table(table_identifier)
+    return df
 
 
-def standardized_tables_union_all(secret_id: str, view_name: str, union_all_query: str):
+def save_data_from_file(
+    secret_id: str,
+    table_identifier: str,
+    file_path: str,
+    file_format: str,
+    file_format_params: Optional[Dict[str, str]] = None,
+):
     session = get_snowpark_session(secret_id)
     session.use_schema("PUBLIC")
-    create_view_query = f"CREATE OR REPLACE VIEW {view_name} AS {union_all_query}"
-    session.sql(create_view_query).collect()
-    logger.info(f"View {view_name} created successfully.")
+
+    logger.info("Creating temporary stage")
+    create_temp_stage = "create or replace temporary stage my_internal_stage"
+    session.sql(create_temp_stage).collect()
+
+    logger.info("Putting objects into Snowflake Internal Stage")
+    transformed_tbl_identifier = table_identifier.replace(
+        '"', "").replace(".", "_")
+    put_command = (
+        f"PUT file://{file_path} @my_internal_stage/{transformed_tbl_identifier}"
+    )
+    session.sql(put_command).collect()
+
+    logger.info("Reading Parquet File")
+
+    if file_format == "parquet":
+        result_df = session.read.parquet(
+            f"@my_internal_stage/{transformed_tbl_identifier}"
+        )
+    elif file_format == "json":
+        result_df = session.read.option("INFER_SCHEMA", "true").json(
+            f"@my_internal_stage/{transformed_tbl_identifier}"
+        )
+    elif file_format == "csv":
+        reader = session.read.option("INFER_SCHEMA", "true")
+
+        delimiter = file_format_params.get("delimiter")
+        if delimiter is not None:
+            reader = reader.option("field_delimiter", delimiter)
+
+        skip_header_option = file_format_params.get("skip_header_option")
+        if skip_header_option is not None:
+            reader = reader.option("skip_header_option", skip_header_option)
+
+        result_df = reader.csv(
+            f"@my_internal_stage/{transformed_tbl_identifier}")
+
+    logger.info("Saving data to snowflake")
+    result_df.write.mode("overwrite").save_as_table(table_identifier)
+
+
+def read_records(mapping_file_path):
+    """ Lê o file JSON e retorna o conteúdo como uma lista de dicionários. """
+    try:
+        with open(mapping_file_path, 'r') as file:
+            data = json.load(file)
+            return data
+    except FileNotFoundError:
+        print(f"file {mapping_file_path} não encontrado.")
+        return []
+    except json.JSONDecodeError:
+        print(f"Erro ao decodificar o file {mapping_file_path}.")
+        return []
+
+
+def standardize_tables_in_snowflake(secret_id, mapping_file_path):
+
+    mappeds = read_records(mapping_file_path)
+    for mapped in mappeds:
+        print(mapped)
+        if not mapped["its_manual_registry"]:
+            spark_df = get_snowflake_table(secret_id, mapped["source"])
+            df = spark_df.toPandas()
+            df_definition = {}
+            for key, item in mapped["map"].items():
+                s_name = key
+                value = item["value"]
+                value_is_column = item["is_column"]
+
+                if not value:
+                    df_definition[s_name] = None
+                elif value_is_column:
+                    df_definition[s_name] = df[value]
+                elif not value_is_column:
+                    df_definition[s_name] = value
+
+            new_df = pd.DataFrame(df_definition)
+
+            file_path = "TEMP_JSON_LINES.json"
+            new_df.to_json(file_path, orient='records', lines=True)
+            schema, name = mapped["source"].split('.')
+            new_table_name = f"{schema.upper()}.STANDARDIZED_{name.upper()}"
+            save_data_from_file(secret_id=secret_id,
+                                file_path=file_path, file_format="json", table_identifier=new_table_name)
 
 
 def orchest_handler():
     import orchest
+    mapping_file_path = orchest.get_step_param('mapping_file_path')
     secret_id = orchest.get_step_param('secret_id')
-    union_all_query = get_union_all_query(secret_id, "STANDARDIZED_")
-    standardized_tables_union_all(
-        secret_id, "VW_STANDARDIZED_MDM_BASE", union_all_query)
+    standardize_tables_in_snowflake(
+        mapping_file_path=mapping_file_path,
+        secret_id=secret_id
+    )
 
 
 def script_handler():
@@ -54,10 +135,18 @@ def script_handler():
     config_json = sys.argv[1]
     config = json.loads(config_json)
 
-    secret_id = os.getenv('secret_id')
-    union_all_query = get_union_all_query(secret_id, "STANDARDIZED_")
-    standardized_tables_union_all(
-        union_all_query, "VW_STANDARDIZED_MDM_BASE", union_all_query)
+    input_filepath = config['input_filepath']
+    table_identifier = config['table_identifier']
+    secret_id = config['secret_id']
+
+    with open(input_filepath, 'r') as f:
+        objects = json.load(f)
+
+    save_objects_in_snowflake_using_copy(
+        objects=objects,
+        table_identifier=table_identifier,
+        secret_id=secret_id
+    )
 
 
 if __name__ == "__main__":
