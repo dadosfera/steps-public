@@ -54,10 +54,10 @@ def script_handler():
     config_json = sys.argv[1]
     config = json.loads(config_json)
 
-    secret_id = os.getenv('secret_id')
+    secret_id = config.get('secret_id')
     union_all_query = get_union_all_query(secret_id, "STANDARDIZED_")
     standardized_tables_union_all(
-        union_all_query, "VW_STANDARDIZED_MDM_BASE", union_all_query)
+        secret_id, "VW_STANDARDIZED_MDM_BASE", union_all_query)
 
 
 if __name__ == "__main__":
