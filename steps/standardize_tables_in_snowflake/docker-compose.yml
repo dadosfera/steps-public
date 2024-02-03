@@ -1,0 +1,17 @@
+version: "3"
+services:
+  step:
+    privileged: true
+    build:
+      context: .
+      args:
+        - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+        - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+        - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+        # STEP CUSTOM CONFIG
+        - SECRET_ID=${SECRET_ID}
+        - MAPPING_FILE_PATH=${MAPPING_FILE_PATH}
+    env_file:
+      - .env
+    volumes:
+      - .:/step
