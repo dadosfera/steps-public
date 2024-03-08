@@ -24,14 +24,20 @@ def orchest_handler():
     import orchest
     secret_id = orchest.get_step_param('secret_id')
     table_identifier = orchest.get_step_param('table_identifier')
-    output_variable_name = orchest.get_step_param('output_variable_name')
+    output_type = orchest.get_step_param('output_type')
     queries = get_snowflake_table(
         secret_id=secret_id,
         table_identifier=table_identifier
     )
+    if output_type == 'to_filepath':
+        output_filepath = orchest.get_step_param('output_filepath')
+        with open(output_filepath,'w') as f:
+            f.write(json.dumps(queries))
+    elif output_type == 'to_outgoing_variable':
+        logger.info(f'Adding the following output to orchest: {queries}')
+        output_variable_name = orchest.get_step_param('output_variable_name')
+        orchest.output(data=queries, name=output_variable_name)
 
-    logger.info(f'Adding the following output to orchest: {queries}')
-    orchest.output(data=queries, name=output_variable_name)
 
 def script_handler():
     if len(sys.argv) != 2:

@@ -4,7 +4,7 @@ import os
 import sys
 import json
 import logging
-from dadosfera.services.maestro import get_data_assets, get_token
+from dadosfera.services.maestro import get_pipelines, get_token
 
 ORCHEST_STEP_UUID = os.environ.get("ORCHEST_STEP_UUID")
 
@@ -42,7 +42,7 @@ def orchest_handler():
         email=DADOSFERA_USERNAME,
         password=DADOSFERA_PASSWORD,
     )
-    data_assets = get_data_assets(
+    pipelines = get_pipelines(
         maestro_base_url=maestro_base_url,
         token=token,
         additional_params=additional_params
@@ -52,15 +52,15 @@ def orchest_handler():
         output_variable_name = orchest.get_step_param('output_variable_name')
         output = [
             {
-                'key': 'data_assets',
-                'file_name': 'data_assets',
-                'file_content': data_assets
+                'key': 'pipelines',
+                'file_name': 'pipelines',
+                'file_content': pipelines
             }
         ]
         orchest.output(data=output, name=output_variable_name)
     elif output_type == 'to_filepath':
         output_filepath = orchest.get_step_param('output_filepath')
-        df = pd.DataFrame(data_assets)
+        df = pd.DataFrame(pipelines)
         df.to_parquet(output_filepath, 'fastparquet')
 
 def script_handler():
@@ -88,13 +88,13 @@ def script_handler():
         email=DADOSFERA_USERNAME,
         password=DADOSFERA_PASSWORD,
     )
-    data_assets = get_data_assets(
+    pipelines = get_pipelines(
         maestro_base_url=maestro_base_url,
         token=token,
         additional_params=additional_params
     )
 
-    df = pd.DataFrame(data_assets)
+    df = pd.DataFrame(pipelines)
     df.to_parquet(output_filepath, 'fastparquet')
 
 if __name__ == "__main__":

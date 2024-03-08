@@ -42,11 +42,18 @@ def apply_text_transformations(
 def orchest_handler():
     import orchest
     secret_id = orchest.get_step_param('secret_id')
-    incoming_variable_name = orchest.get_step_param('incoming_variable_name')
     text_transformations = orchest.get_step_param('text_transformations')
-    output_variable_name = orchest.get_step_param('output_variable_name')
+    input_type = orchest.get_step_param("input_type")
+    output_type = orchest.get_step_param("output_type")
 
-    snowflake_queries_object = orchest.get_inputs()[incoming_variable_name]
+    if input_type == "from_filepath":
+        input_filepath = orchest.get_step_param("input_filepath")
+        with open(input_filepath) as f:
+            snowflake_queries_object = json.loads(f.read())
+
+    elif input_type == "from_incoming_variable":
+        incoming_variable_name = orchest.get_step_param("incoming_variable_name")
+        snowflake_queries_object = orchest.get_inputs()[incoming_variable_name]
 
     queries = apply_text_transformations(
         secret_id=secret_id,
@@ -54,8 +61,15 @@ def orchest_handler():
         text_transformations=text_transformations
     )
 
-    logger.info(f'Adding the following output to orchest: {queries}')
-    orchest.output(data=queries, name=output_variable_name)
+    if output_type == "to_filepath":
+        output_filepath = orchest.get_step_param("output_filepath")
+        with open(output_filepath, "w") as f:
+            f.write(json.dumps(queries))
+    elif output_type == "to_outgoing_variable":
+        logger.info(f"Adding the following output to orchest: {queries}")
+        output_variable_name = orchest.get_step_param("output_variable_name")
+        orchest.output(data=queries, name=output_variable_name)
+
 
 def script_handler():
     if len(sys.argv) != 2:

@@ -13,7 +13,7 @@ logger.setLevel(logging.DEBUG)
 
 ORCHEST_STEP_UUID = os.environ.get('ORCHEST_STEP_UUID')
 
-def snowflake_remove_columns(
+def snowflake_rename_columns(
         secret_id: str,
         snowflake_queries_object: Dict,
         columns_to_rename: List[Dict[str, str]]
@@ -35,20 +35,36 @@ def snowflake_remove_columns(
 def orchest_handler():
     import orchest
     secret_id = orchest.get_step_param('secret_id')
-    incoming_variable_name = orchest.get_step_param('incoming_variable_name')
     columns_to_rename = orchest.get_step_param('columns_to_rename')
-    output_variable_name = orchest.get_step_param('output_variable_name')
+    input_type = orchest.get_step_param('input_type')
+    output_type = orchest.get_step_param('output_type')
 
-    snowflake_queries_object = orchest.get_inputs()[incoming_variable_name]
 
-    queries = snowflake_remove_columns(
+    if input_type == 'from_filepath':
+        input_filepath = orchest.get_step_param('input_filepath')
+        with open(input_filepath) as f:
+            snowflake_queries_object = json.loads(f.read())
+
+    elif input_type == 'from_incoming_variable':
+        incoming_variable_name = orchest.get_step_param('incoming_variable_name')
+        snowflake_queries_object = orchest.get_inputs()[incoming_variable_name]
+
+
+    queries = snowflake_rename_columns(
         secret_id=secret_id,
         snowflake_queries_object=snowflake_queries_object,
         columns_to_rename=columns_to_rename
     )
+    
+    if output_type == 'to_filepath':
+        output_filepath = orchest.get_step_param('output_filepath')
+        with open(output_filepath,'w') as f:
+            f.write(json.dumps(queries))
+    elif output_type == 'to_outgoing_variable':
+        logger.info(f'Adding the following output to orchest: {queries}')
+        output_variable_name = orchest.get_step_param('output_variable_name')
+        orchest.output(data=queries, name=output_variable_name)
 
-    logger.info(f'Adding the following output to orchest: {queries}')
-    orchest.output(data=queries, name=output_variable_name)
 
 def script_handler():
     if len(sys.argv) != 2:
@@ -57,14 +73,15 @@ def script_handler():
     config = json.loads(config_json)
 
     secret_id = config.get('secret_id')
+    columns_to_rename = config.get('columns_to_rename')
     input_filepath = config.get('input_filepath')
     output_filepath = config.get('output_filepath')
-    columns_to_rename = config.get('columns_to_rename')
+    
 
     with open(input_filepath) as f:
         snowflake_queries_object = json.loads(f.read())
 
-    queries = snowflake_remove_columns(
+    queries = snowflake_rename_columns(
         secret_id=secret_id,
         snowflake_queries_object=snowflake_queries_object,
         columns_to_rename=columns_to_rename

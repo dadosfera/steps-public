@@ -1,21 +1,30 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "Save objects in snowflake",
-    "description": "Schema for input validation to the function save_objects_in_snowflake",
-    "type": "object",
-    "properties": {
+  "definitions": {
       "incoming_variable_name": {
-        "default": "Type of run of the step",
-        "type": "string"
+          "type": "string",
+          "description": "The name of the incoming variable name"
+      },
+      "input_filepath": {
+          "type": "string",
+          "description": "The input filepath that will be read"
+      }
+  },
+  "type": "object",
+  "properties": {
+      "secret_id": {
+          "type": "string",
+          "description": "The secret id that will be used to retrieve the snowflake credentials"
       },
       "table_identifier": {
-        "type": "string",
-        "description": "The name of the table"
+          "type": "string",
+          "description": "The name of the table. Ex: PUBLIC.TABLE_NAME"
       },
-      "secret_id": {
-        "type": "string",
-        "description": "The name of the table"
+      "input_type": {
+          "type": "string",
+          "enum": [
+              "from_incoming_variable",
+              "from_filepath"
+          ]
       }
-    },
-    "required": ["incoming_variable_name","table_identifier","secret_id"]
+  }
 }
