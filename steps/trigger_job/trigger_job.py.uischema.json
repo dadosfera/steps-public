@@ -1,0 +1,17 @@
+{
+    "type": "VerticalLayout",
+    "elements": [
+        {
+            "type": "Control",
+            "scope": "#/properties/instance_url"
+        },
+        {
+            "type": "Control",
+            "scope": "#/properties/target_pipeline_uuid"
+        },
+        {
+            "type": "Control",
+            "scope": "#/properties/target_job_name"
+        }
+    ]
+}
