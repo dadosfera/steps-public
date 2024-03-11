@@ -34,7 +34,7 @@ As seguintes variáveis de ambiente são necessárias para a execução do step:
 
 ### Parâmetros
 
-Esses parâmetros deverão ser editados no arquivo json `trigger_job.py.schema.json`.
+Esses parâmetros deverão ser selecionados no step na pipeline:
 
 - **instance_url**: URL base para o módulo de inteligência. Normalmente estão nesse formato: `https://app-intelligence-CLIENTE.dadosfera.ai`
   
@@ -72,16 +72,9 @@ A partir disso, queremos acionar o job `modelagem-main`, logo após a execução
 
    O Trigger Modelagem será o script `trigger_job.py`.
 
-2) Editamos o arquivo de configuração `trigger_job.py.schema.json`. 
+2) No step em si, em "Parameters" selecionamos os valores corretos adicionados para **instance_url**,  **target_pipeline_uuid** e **target_job_name**. 
    
-   2.1. instance_url como `https://app-intelligence-best-company.dadosfera.ai`
-
-   2.2. target_pipeline_uuid como o id da pipeline que está o job `modelagem-main`. Esse id pode ser obtido dentro do módulo, em "Pipelines" e checando a url, selecionando o valor após "pipeline_uuid=".
-
-   2.3. target_job_name como `modelagem-main`
-
-3) Agora no step em si, em "Parameters" selecionamos os valores corretos adicionados. Após, rodamos o step, e o job da `modelagem-main` será acionado quando executarmos o step `Trigger Modelagem`
-
+3) Após, rodamos o step, e o job da `modelagem-main` será acionado quando executarmos o step `Trigger Modelagem`
 
 
 

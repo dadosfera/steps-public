@@ -3,29 +3,16 @@
     "properties": {
         "instance_url": {
             "description": "Base URL for the inteligence module",
-            "type": "string",
-            "enum": [
-                "https://app-intelligence-CLIENTE.dadosfera.ai",
-                "https://CLIENTE.dadosfera.ai"
-            ]
+            "type": "string"
+            
         },
         "target_pipeline_uuid": {
             "description": "The pipeline ID where the Job you want to trigger is located.",
-            "type": "string",
-            "enum": [
-                "pipeline_uuid_a",
-                "pipeline_uuid_b"
-            ]
+            "type": "string"
         },
         "target_job_name": {
             "description": "The name of the Job you want to trigger - important to keep the same name whenever recreating the job.",
-            "type": "string",
-            "enum": [
-                "nome_do_job_01",
-                "nome_do_job_02",
-                "nome_do_job_03",
-                "nome_do_job_04"
-            ]
+            "type": "string"
         }
     },
     "required": [

@@ -114,12 +114,12 @@ class TriggerJob:
                         return job_id
                     else:
                         self.logger.error(
-                            "Job id não encontrado. Poor favor checar target_pipeline_uuid e target_job_name."
+                            "Job id não encontrado. Por favor checar target_pipeline_uuid e target_job_name."
                         )
                         raise InvalidJobIDError("Job id not found.")
 
             self.logger.error(
-                "Job id não encontrado. Poor favor checar target_pipeline_uuid e target_job_name."
+                "Job id não encontrado. Por favor checar target_pipeline_uuid e target_job_name."
             )
             raise JobIDNotFoundError("Job id not found.")
 
