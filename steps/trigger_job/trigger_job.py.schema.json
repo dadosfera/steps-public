@@ -1,0 +1,23 @@
+{
+    "type": "object",
+    "properties": {
+        "instance_url": {
+            "description": "Base URL for the inteligence module",
+            "type": "string"
+            
+        },
+        "target_pipeline_uuid": {
+            "description": "The pipeline ID where the Job you want to trigger is located.",
+            "type": "string"
+        },
+        "target_job_name": {
+            "description": "The name of the Job you want to trigger - important to keep the same name whenever recreating the job.",
+            "type": "string"
+        }
+    },
+    "required": [
+        "instance_url",
+        "target_pipeline_uuid",
+        "target_job_name"
+    ]
+}

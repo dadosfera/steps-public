@@ -1,0 +1,42 @@
+{
+    "type": "Categorization",
+    "elements": [
+      {
+        "type": "Category",
+        "label": "Main Configuration",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/instance_url",
+                "label": "Platform API Base URL"
+              }
+            ]
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/target_pipeline_uuid",
+                "label": "Target Pipeline ID to Trigger"
+              }
+            ]
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/target_job_name",
+                "label": "Target Job Name to Trigger"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+  
