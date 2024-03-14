@@ -31,7 +31,7 @@ def get_objects_from_s3(bucket_name: str, prefix: str) -> Union[Dict[str, str], 
             objects.append({
                 'file_content': body,
                 'key': object_metadata['Key'],
-                'file_name': object_metadata['Key'].split('/')[-1]
+                'file_name': object_metadata['Key'].split('/')[-1].split('.')[0]
             })
 
     return objects
