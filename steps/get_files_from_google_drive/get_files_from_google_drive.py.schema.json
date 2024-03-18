@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "outgoing_variable_name": {
+      "type": "string",
+      "description": "The name of the outgoing variable"
+    },
+    "service_account_file": {
+      "type": "string",
+      "default": "client_secrets",
+      "description": "JSON service account credentials file"
+    },
+    "selected_folder_id": {
+      "type": "string",
+      "description": "Google Drive folder ID to get data from"
+    }
+  },
+  "type": "object",
+  "properties": {
+    "service_account_file": {
+      "$ref": "#/definitions/service_account_file"
+    },
+    "selected_folder_id": {
+      "$ref": "#/definitions/selected_folder_id"
+    },
+    "outgoing_variable_name": {
+      "$ref": "#/definitions/outgoing_variable_name"
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "type": "Categorization",
+  "elements": [
+    {
+      "type": "Category",
+      "label": "Main Configuration",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/service_account_file",
+              "label": "Service Account File"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/selected_folder_id",
+              "label": "Selected Folder ID"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/outgoing_variable_name",
+              "label": "Outgoing Variable Name"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
