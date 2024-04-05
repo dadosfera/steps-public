@@ -26,7 +26,7 @@ def auto_discovery_valid_flatten_columns(data_frame):
         except SnowparkSQLException as e:
             return False
         return True
-    
+
     columns_to_flatten = []
     for column in data_frame.columns:
         if _is_object(data_frame, column):
@@ -46,9 +46,9 @@ def get_keys(data_frame, column_name):
 def get_column_flatten_select_expressions(data_frame, column_name):
     try:
         keys = get_keys(data_frame, column_name)
-        
+
         select_expr = []
-        
+
         for key in keys:
             select_expr.append(
                 f'parse_json({column_name}):{key}::string as {column_name}__{key}'
@@ -60,24 +60,24 @@ def get_column_flatten_select_expressions(data_frame, column_name):
 def flatten_data(data_frame, columns_to_flatten):
     flatten_expressions = []
     invalid_columns = []
-    
+
     for column in columns_to_flatten:
         select_expr, invalid_column = get_column_flatten_select_expressions(
             data_frame, column)
-        
+
         flatten_expressions.extend(select_expr)
 
         if invalid_column:
 
             logger.warning(f'Unable to flatten: {invalid_column}')
             invalid_columns.append(invalid_column)
-        
+
     select_expr = flatten_expressions + data_frame.columns
 
     logger.info(f'Select Expr before filtering: {select_expr}')
     return [
-        column 
-        for column in select_expr 
+        column
+        for column in select_expr
         if column not in columns_to_flatten or column in invalid_columns
     ]
 
@@ -86,7 +86,7 @@ def snowflake_flatten_columns(
         columns_to_flatten: List[str]
     ) -> List[str]:
 
-    
+
     select_expr = flatten_data(df, columns_to_flatten)
     logger.info(f'Select Expr after filtering: {select_expr}')
     return df.select_expr(*select_expr)
@@ -111,7 +111,7 @@ def _remove_prefixes_from_columns(data_frame, column_prefixes):
     return data_frame
 
 def _before_apply_function_operations(
-        secret_id, 
+        secret_id,
         snowflake_queries_object,
         operations
     ):
@@ -132,7 +132,7 @@ def _before_apply_function_operations(
     if len(columns_prefixes_to_remove) > 0:
         logger.info('Removing columns that matches prefixes')
         df = _drop_columns_that_match_at_least_prefix(df, columns_prefixes_to_remove)
-        
+
 
     remove_prefix_from_columns = operations.get(
         'remove_prefix_from_columns', []
@@ -193,7 +193,7 @@ def script_handler():
     secret_id = config.get('secret_id')
     incoming_variable_name = config.get('incoming_variable_name', None)
     before_apply_operations = config.get('before_apply_operations', {})
-    
+
     output_variable_name = config.get('output_variable_name')
 
     with open(input_filepath) as f:

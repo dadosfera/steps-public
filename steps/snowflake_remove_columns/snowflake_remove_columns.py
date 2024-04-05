@@ -33,7 +33,7 @@ def orchest_handler():
     import orchest
     secret_id = orchest.get_step_param('secret_id')
     columns_to_remove = orchest.get_step_param('columns_to_remove')
-    
+
     input_type = orchest.get_step_param('input_type')
     output_type = orchest.get_step_param('output_type')
 

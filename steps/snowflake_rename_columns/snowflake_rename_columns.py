@@ -55,7 +55,7 @@ def orchest_handler():
         snowflake_queries_object=snowflake_queries_object,
         columns_to_rename=columns_to_rename
     )
-    
+
     if output_type == 'to_filepath':
         output_filepath = orchest.get_step_param('output_filepath')
         with open(output_filepath,'w') as f:
@@ -76,7 +76,7 @@ def script_handler():
     columns_to_rename = config.get('columns_to_rename')
     input_filepath = config.get('input_filepath')
     output_filepath = config.get('output_filepath')
-    
+
 
     with open(input_filepath) as f:
         snowflake_queries_object = json.loads(f.read())

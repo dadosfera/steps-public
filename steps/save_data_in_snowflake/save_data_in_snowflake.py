@@ -35,7 +35,7 @@ def orchest_handler():
     secret_id = orchest.get_step_param('secret_id')
     table_identifier = orchest.get_step_param('table_identifier')
     input_type = orchest.get_step_param('input_type')
-    
+
     if input_type == "from_filepath":
         input_filepath = orchest.get_step_param("input_filepath")
         with open(input_filepath) as f:
