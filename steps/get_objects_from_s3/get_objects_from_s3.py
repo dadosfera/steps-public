@@ -36,44 +36,44 @@ def get_objects_from_s3(bucket_name: str, prefix: str) -> Union[Dict[str, str], 
 
     return objects
 
-def orchest_handler():
-    import orchest
-    bucket_name = orchest.get_step_param('bucket_name')
-    prefix = orchest.get_step_param('prefix')
-    output_type = orchest.get_step_param('output_type')
-    if prefix is None:
-        prefix = ''
+    def orchest_handler():
+        import orchest
+        bucket_name = orchest.get_step_param('bucket_name')
+        prefix = orchest.get_step_param('prefix')
+        output_type = orchest.get_step_param('output_type')
+        if prefix is None:
+            prefix = ''
 
-    objects = get_objects_from_s3(bucket_name=bucket_name, prefix=prefix)
+        objects = get_objects_from_s3(bucket_name=bucket_name, prefix=prefix)
 
-    if output_type == 'to_outgoing_variable':
-        output_variable_name = orchest.get_step_param('output_variable_name')
-        orchest.output(data=objects, name=output_variable_name)
-    elif output_type == 'to_filepath':
-        output_filepath = orchest.get_step_param('output_filepath')
+        if output_type == 'to_outgoing_variable':
+            output_variable_name = orchest.get_step_param('output_variable_name')
+            orchest.output(data=objects, name=output_variable_name)
+        elif output_type == 'to_filepath':
+            output_filepath = orchest.get_step_param('output_filepath')
+            with open(output_filepath,'w') as f:
+                f.write(json.dumps(objects))
+
+    def script_handler():
+        if len(sys.argv) != 2:
+            raise Exception("Please provide the required configuration in JSON format")
+        config_json = sys.argv[1]
+        config = json.loads(config_json)
+
+        bucket_name = config.get('bucket_name')
+        prefix = config.get('prefix')
+        output_filepath = config.get('output_filepath')
+        objects = get_objects_from_s3(bucket_name=bucket_name, prefix=prefix)
+
         with open(output_filepath,'w') as f:
             f.write(json.dumps(objects))
 
-def script_handler():
-    if len(sys.argv) != 2:
-        raise Exception("Please provide the required configuration in JSON format")
-    config_json = sys.argv[1]
-    config = json.loads(config_json)
 
-    bucket_name = config.get('bucket_name')
-    prefix = config.get('prefix')
-    output_filepath = config.get('output_filepath')
-    objects = get_objects_from_s3(bucket_name=bucket_name, prefix=prefix)
+    if __name__ == "__main__":
 
-    with open(output_filepath,'w') as f:
-        f.write(json.dumps(objects))
-
-
-if __name__ == "__main__":
-
-    if ORCHEST_STEP_UUID is not None:
-        logger.info("Running as Orchest Step")
-        orchest_handler()
-    else:
-        logger.info("Running as script")
-        script_handler()
+        if ORCHEST_STEP_UUID is not None:
+            logger.info("Running as Orchest Step")
+            orchest_handler()
+        else:
+            logger.info("Running as script")
+            script_handler()

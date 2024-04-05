@@ -192,10 +192,7 @@ def script_handler():
 
     secret_id = config.get('secret_id')
     incoming_variable_name = config.get('incoming_variable_name', None)
-    columns_to_remove_before_apply = config.get('columns_to_remove_before_apply', [])
-    columns_prefixes_to_remove_before_apply_operation = config.get('columns_prefixes_to_remove_before_apply_operation', [])
-    columns_prefixes_to_remove_before_apply_operation
-    columns_to_flatten = config.get('columns_to_flatten')
+    before_apply_operations = config.get('before_apply_operations', {})
     
     output_variable_name = config.get('output_variable_name')
 
@@ -208,8 +205,23 @@ def script_handler():
         columns_to_remove=columns_to_remove_before_apply,
         columns_prefixes_to_remove=columns_prefixes_to_remove_before_apply_operation
     )
+    logger.info(f'Queries: {df.queries}')
 
-    snowflake_flatten_columns(df, columns_to_flatten)
+    auto_discovery_flatten_mode = config.get('auto_discovery_flatten_mode', True)
+    if auto_discovery_flatten_mode:
+        columns_to_flatten = auto_discovery_valid_flatten_columns(df)
+    else:
+        columns_to_flatten = config.get('columns_to_flatten')
+
+    if columns_to_flatten is None:
+        logger.error('If auto_discovery_flatten_columns_mode is turnoff, you should provide the columns to flatten')
+        raise Exception('If auto_discovery_flatten_columns_mode is turnoff, you should provide the columns to flatten')
+
+    if len(columns_to_flatten) == 0:
+        logger.error('No Valid Columns To Flatten Found')
+        raise Exception('If auto_discovery_flatten_columns_mode is turnoff, you should provide the columns to flatten')
+
+    df = snowflake_flatten_columns(df, columns_to_flatten)
     queries = _post_apply(df)
 
     with open(output_filepath,'w') as f:
