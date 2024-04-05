@@ -1,0 +1,65 @@
+{
+  "definitions": {
+    "before_apply_operations": {
+      "type": "object",
+      "title": "Initialization process of the dataframe that will be transformed",
+      "properties": {
+        "columns_to_remove": {
+          "description": "Whether you desired to remove columns by name before applying operations",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "The name of the columns that will be removed"
+          }
+        },
+        "column_prefixes_to_remove": {
+          "description": "Columns that matches the prefixes provided will be removed before applying the operations",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "Columns that matches the prefixes provided will be removed"
+          }
+        },
+        "remove_prefix_from_columns": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "Remove Prefixes From Columns. It will be done in descending order using the prefix length"
+          }
+        }
+      },
+      "required": []
+    }
+  },
+  "type": "object",
+  "properties": {
+    "secret_id": {
+      "type": "string"
+    },
+    "incoming_variable_name": {
+      "description": "The name of the variable that contains the data that will be copied to Snowflake",
+      "type": "string"
+    },
+    "output_variable_name": {
+      "type": "string",
+      "description": "The output variable name where the data will be stored"
+    },
+    "auto_discovery_flatten_mode": {
+      "type": "boolean",
+      "description": "auto_discovery_flatten_mode"
+    },
+    "columns_to_flatten": {
+      "description": "Columns that will pass through the flatten process",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type":"string",
+            "description": "Column that will be flattened"
+          }
+        }
+      }
+    }
+  }
+}

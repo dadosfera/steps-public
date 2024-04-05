@@ -1,0 +1,86 @@
+{
+  "type": "Categorization",
+  "elements": [
+    {
+      "type": "Category",
+      "label": "Main Configuration",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/secret_id",
+              "label": "Secret Id"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/incoming_variable_name",
+              "label": "Incoming Variable Name"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/output_variable_name",
+              "label": "Output Variable Name"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/auto_discovery_flatten_mode",
+              "label": "Whether you want to use autodiscovery mode to identify valid columns for flattening"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/columns_to_flatten",
+              "label": "Columns To Flatten"
+            }
+          ],
+          "rule": {
+            "effect": "SHOW",
+            "condition": {
+              "scope": "#/properties/auto_discovery_flatten_mode",
+              "schema": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Category",
+      "label": "Preprocessing Operations (Optional)",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/definitions/before_apply_configurations",
+              "label": "Operations that will be applied previous to execution"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
