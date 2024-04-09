@@ -4,7 +4,7 @@
         "instance_url": {
             "description": "Base URL for the inteligence module",
             "type": "string"
-            
+
         },
         "target_pipeline_uuid": {
             "description": "The pipeline ID where the Job you want to trigger is located.",

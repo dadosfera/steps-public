@@ -36,7 +36,7 @@ def put_objects_in_s3(
 
         if isinstance(object_['file_content'], str):
             object_['file_content'] = object_['file_content'].encode('utf-8')
-        
+
         response = client.put_object(
             Bucket=bucket_name,
             Key=key,
@@ -57,11 +57,11 @@ def orchest_handler():
     prefix = orchest.get_step_param('prefix')
     file_extension = orchest.get_step_param('file_extension')
     input_type = orchest.get_step_param('input_type')
-    
+
 
     if prefix is None:
         prefix = ''
-    
+
     if input_type == "from_filepath":
         input_filepaths = orchest.get_step_param("input_filepaths")
 
@@ -73,7 +73,7 @@ def orchest_handler():
                 "file_name": input_filepath,
                 "file_content": file_content
             })
-    
+
     elif input_type == "from_incoming_variable":
         incoming_variable_name = orchest.get_step_param("incoming_variable_name")
         objects = orchest.get_inputs()[incoming_variable_name]

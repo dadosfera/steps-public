@@ -15,6 +15,14 @@
     "output_filepath": {
       "type": "string",
       "description": "The name of the value where the data will be stored"
+    },
+    "sql_filepath": {
+      "type":"string",
+      "description": "The path to the sql statement"
+    },
+    "sql_statement": {
+      "type":"string",
+      "description": "The sql statement that will be used"
     }
   },
   "type": "object",
@@ -23,28 +31,16 @@
       "type": "string",
       "description": "The Secret Id From SecretsManager"
     },
-    "categorical_column_name": {
-      "description": "The categorical column that will contain the name of the categories (ex: department)",
-      "type": "string"
-    },
-    "numerical_column_name": {
-      "default": "The numerical column that will contain value for each category (ex: Revenue)",
-      "type": "string"
-    },
-    "columns_to_unpivot": {
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "description": "The columns that should be unpivoted",
-        "type": "string"
-      }
-    },
-    "input_type": {
+    "table_identifier": {
       "type": "string",
-      "description": "The secret id that will be used to retrieve the snowflake credentials",
+      "description": "The table identifier of the table. PUBLIC.TABLE_NAME"
+    },
+    "sql_statement_from": {
+      "type":"string",
+      "description": "The input that will be used ",
       "enum": [
-        "from_incoming_variable",
-        "from_filepath"
+        "from_filepath",
+        "from_text"
       ]
     },
     "output_type": {
@@ -58,10 +54,9 @@
   },
   "required": [
     "secret_id",
-    "categorical_column_name",
-    "numerical_column_name",
-    "columns_to_unpivot",
     "input_type",
-    "output_type"
+    "output_type",
+    "sql_statement_from",
+    "table_identifier"
   ]
 }
