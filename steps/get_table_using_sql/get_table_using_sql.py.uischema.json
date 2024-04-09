@@ -1,0 +1,126 @@
+{
+  "type": "Categorization",
+  "elements": [
+    {
+      "type": "Category",
+      "label": "Main Configuration",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/secret_id",
+              "label": "Secret Id"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/sql_statement_from",
+              "label": "Recover SQL Statement From"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/output_type",
+              "label": "Output Type"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/definitions/sql_filepath",
+              "label": "Path To The SQL Statement"
+            }
+          ],
+          "rule": {
+            "effect": "SHOW",
+            "condition": {
+              "scope": "#/properties/sql_statement_from",
+              "schema": {
+                "const": "from_filepath"
+              }
+            }
+          }
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/definitions/sql_statement",
+              "label": "SQL Statement",
+              "options": {
+                "multi": true
+              }
+            }
+          ],
+          "rule": {
+            "effect": "SHOW",
+            "condition": {
+              "scope": "#/properties/sql_statement_from",
+              "schema": {
+                "const": "from_text"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Category",
+      "label": "Output Configuration",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/definitions/output_filepath",
+              "label": "Output Filepath"
+            }
+          ],
+          "rule": {
+            "effect": "SHOW",
+            "condition": {
+              "scope": "#/properties/output_type",
+              "schema": {
+                "const": "to_filepath"
+              }
+            }
+          }
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/definitions/output_variable_name",
+              "label": "Output Variable Name"
+            }
+          ],
+          "rule": {
+            "effect": "SHOW",
+            "condition": {
+              "scope": "#/properties/output_type",
+              "schema": {
+                "const": "to_outgoing_variable"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

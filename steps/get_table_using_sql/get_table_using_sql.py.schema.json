@@ -1,0 +1,62 @@
+{
+  "definitions": {
+    "incoming_variable_name": {
+      "type": "string",
+      "description": "The name of the incoming variable name"
+    },
+    "input_filepath": {
+      "type": "string",
+      "description": "The input filepath that will be read"
+    },
+    "output_variable_name": {
+      "type": "string",
+      "description": "The output variable name where the data will be stored"
+    },
+    "output_filepath": {
+      "type": "string",
+      "description": "The name of the value where the data will be stored"
+    },
+    "sql_filepath": {
+      "type":"string",
+      "description": "The path to the sql statement"
+    },
+    "sql_statement": {
+      "type":"string",
+      "description": "The sql statement that will be used"
+    }
+  },
+  "type": "object",
+  "properties": {
+    "secret_id": {
+      "type": "string",
+      "description": "The Secret Id From SecretsManager"
+    },
+    "table_identifier": {
+      "type": "string",
+      "description": "The table identifier of the table. PUBLIC.TABLE_NAME"
+    },
+    "sql_statement_from": {
+      "type":"string",
+      "description": "The input that will be used ",
+      "enum": [
+        "from_filepath",
+        "from_text"
+      ]
+    },
+    "output_type": {
+      "type": "string",
+      "description": "The output_type",
+      "enum": [
+        "to_outgoing_variable",
+        "to_filepath"
+      ]
+    }
+  },
+  "required": [
+    "secret_id",
+    "input_type",
+    "output_type",
+    "sql_statement_from",
+    "table_identifier"
+  ]
+}

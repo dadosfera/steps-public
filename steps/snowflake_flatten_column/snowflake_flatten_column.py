@@ -43,6 +43,12 @@ def get_keys(data_frame, column_name):
     )
     return json.loads(keys[0].KEYS)
 
+def normalized_column_name(keys):
+    return keys.replace("-", "_")
+
+def replace_quotes(string):
+    return string.replace("\"","")
+
 def get_column_flatten_select_expressions(data_frame, column_name):
     try:
         keys = get_keys(data_frame, column_name)
@@ -50,8 +56,13 @@ def get_column_flatten_select_expressions(data_frame, column_name):
         select_expr = []
 
         for key in keys:
+
+            new_column_name = replace_quotes(
+                f"{normalized_column_name(column_name)}__{normalized_column_name(key)}"
+            )
+            
             select_expr.append(
-                f'parse_json({column_name}):{key}::string as {column_name}__{key}'
+                f'parse_json({column_name}):"{key}"::string as {new_column_name}'
             )
         return select_expr, None
     except SnowparkSQLException as e:
