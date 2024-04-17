@@ -1,0 +1,54 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "output_variable_name": {
+            "type": "string",
+            "description": "The output variable name where the data will be stored"
+          },
+        "output_filepath": {
+            "type": "string",
+            "description": "The name of the value where the data will be stored"
+        }
+
+    },
+    "type": "object",
+    "properties": {
+      "secret_id": {
+        "type": "string",
+        "description": "The Secret Id From SecretsManager"
+      },
+      "table_identifier": {
+        "type": "string",
+        "description": "The table that will be used as source for RFM in the format 'schema.name'"
+      },
+      "customer_id_col": {
+        "type": "string",
+        "description": "The name of the column that has the unique IDs of the customers"
+      },
+      "date_col": {
+        "type": "string",
+        "description": "The name of the date column"
+      },
+      "monetary_col": {
+        "type": "string",
+        "description": "The name of the column with the monetary value spent"
+      },
+      "output_type": {
+        "type": "string",
+        "description": "The output_type",
+        "enum": [
+          "to_outgoing_variable",
+          "to_filepath"
+        ]
+      }
+    },
+    "required": [
+      "secret_id",
+      "table_identifier",
+      "customer_id_col",
+      "date_col",
+      "monetary_col",
+      "output_type"
+    ]
+  }
+  
