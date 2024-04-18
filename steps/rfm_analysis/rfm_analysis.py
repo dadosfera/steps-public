@@ -14,7 +14,6 @@ logger.setLevel(logging.DEBUG)
 
 
 def create_rfm_table(session, table_identifier: str, customer_id_col: str, date_col: str, monetary_col: str):
-    session = get_snowpark_session()
     df = session.sql(f"""WITH model AS (
                         SELECT
                             {customer_id_col} as CUSTOMER_ID,
