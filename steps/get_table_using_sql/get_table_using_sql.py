@@ -2,6 +2,7 @@ from dadosfera.services.snowflake import get_snowpark_session
 from typing import List
 import logging
 import json
+import jinja2
 import sys
 import os
 
@@ -25,7 +26,7 @@ def orchest_handler():
     secret_id = orchest.get_step_param('secret_id')
     table_identifier = orchest.get_step_param('table_identifier')
     sql_statement_from = orchest.get_step_param('sql_statement_from')
-
+    sql_template_parameters = orchest.get_step_param('sql_template_parameters', {})
     if sql_statement_from == 'from_filepath':
         sql_filepath = orchest.get_step_param('sql_filepath', None)
         with open(sql_filepath) as f:
@@ -35,14 +36,21 @@ def orchest_handler():
         sql_statement = orchest.get_step_param('sql_statement', None)
 
     output_type = orchest.get_step_param('output_type')
-    queries = snowflake_execute_sql(
-        secret_id=secret_id,
-        sql_statement=sql_statement
-    )
 
     if sql_statement is None:
         raise Exception('Please provide a sql statement')
-    
+        
+    sql_params = {}
+    for parameter in sql_template_parameters:
+        sql_params[parameter['key']] = parameter['value']
+
+    template = jinja2.Template(sql_statement)
+    rendered_sql_statement = template.render(**sql_params)
+    queries = snowflake_execute_sql(
+        secret_id=secret_id,
+        sql_statement=rendered_sql_statement
+    )
+
     if output_type == 'to_filepath':
         output_filepath = orchest.get_step_param('output_filepath')
         with open(output_filepath,'w') as f:
@@ -51,7 +59,6 @@ def orchest_handler():
         logger.info(f'Adding the following output to orchest: {queries}')
         output_variable_name = orchest.get_step_param('output_variable_name')
         orchest.output(data=queries, name=output_variable_name)
-
 
 def script_handler():
     if len(sys.argv) != 2:

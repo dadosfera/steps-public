@@ -30,6 +30,16 @@
           "elements": [
             {
               "type": "Control",
+              "scope": "#/properties/sql_template_parameters",
+              "label": "SQL Statement Parameters"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
               "scope": "#/properties/output_type",
               "label": "Output Type"
             }
