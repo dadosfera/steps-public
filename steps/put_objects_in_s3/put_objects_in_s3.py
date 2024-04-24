@@ -37,6 +37,9 @@ def put_objects_in_s3(
         if isinstance(object_['file_content'], str):
             object_['file_content'] = object_['file_content'].encode('utf-8')
 
+        if isinstance(object_['file_content'], dict):
+            object_['file_content'] = json.dumps(object_['file_content']).encode('utf-8')
+
         response = client.put_object(
             Bucket=bucket_name,
             Key=key,

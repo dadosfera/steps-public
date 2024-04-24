@@ -43,6 +43,22 @@
         "from_text"
       ]
     },
+    "sql_template_parameters": {
+      "type": "array",
+      "items": {
+        "type":"object",
+        "properties": {
+          "key": {
+            "type":"string",
+            "description": "Name of the parameter that will be used to render the SQL statement"
+          },
+          "value": {
+            "type":"string",
+            "description": "Value that will be provided to the SQL statement"
+          }
+        }
+      }
+    },
     "output_type": {
       "type": "string",
       "description": "The output_type",
