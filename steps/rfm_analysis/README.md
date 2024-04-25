@@ -2,7 +2,7 @@
 # Análise RFM - Step
 
 ## Visão Geral
-Este step realiza a análise RFM (Recência, Frequência, Valor Monetário) em uma tabela do banco de dados Snowflake. Ele calcula os escores RFM para cada cliente com base em seu comportamento de compra e os categoriza em diferentes tipos de clientes. Os resultados são armazenados em uma nova tabela e podem ser exportados para um arquivo ou passados como uma variável em um ambiente de orquestração.
+Este step realiza a análise RFM (Recência, Frequência, Valor Monetário) em uma tabela do banco de dados Snowflake. Ele calcula os escores RFM para cada cliente com base em seu comportamento de compra e os categoriza em diferentes tipos de clientes. A consulta modelo resultante pode ser exportada para um arquivo ou enviada como uma variável em um ambiente de orquestração.
 
 ## Requisitos
 - Python 3.x
@@ -35,11 +35,8 @@ Exemplo de `config.json`:
 ```
 
 ### Executando em um Ambiente de Orquestração
-Se estiver integrando com uma plataforma de orquestração como Orchest, defina a variável de ambiente `ORCHEST_STEP_UUID` e forneça os parâmetros do step:
-```bash
-export ORCHEST_STEP_UUID=<uuid_do_step>
-python rfm_analysis.py
-```
+Se estiver integrando com uma plataforma de orquestração como o Módulo de Transformação Dadosfera, crie uma pipeline da seguinte maneira: Defina a variável de ambiente `output_type` como 'to_outgoing_variable' e defina o nome da variável de saída `output_variable_name`, além dos demais parâmetros deste step. Forneça a variável `output_variable_name` como parâmetro `input_variable_name` do próximo step, como por exemplo, o step `save_data_in_snowflake` para salvar a tabela resultante da análise RFM no Snowflake.
+
 Parâmetros do step:
 Os seguintes parâmetros deverão ser fornecidos ao executar o script:
 - `secret_id`: ID secreto do Snowflake
@@ -52,7 +49,7 @@ Os seguintes parâmetros deverão ser fornecidos ao executar o script:
 - `output_variable_name`: Nome da variável de saída (obrigatório se o output_type for 'to_outgoing_variable')
 
 ## Saída
-O script cria um dataframe com os resultados da análise RFM. Além disso, ele pode exportar as consultas para um arquivo ou passá-las como uma variável em um ambiente de orquestração.
+O script cria um modelo de consulta para análise RFM. Além disso, ele pode exportar a consulta para um arquivo ou passá-las como uma variável em um ambiente de orquestração.
 
 Esse step `rfm_analysis` é facilmente integrável com outros steps, e assim sendo, a variável **output_variable_name** deverá ter o mesmo nome da variável **input_variable_name** do step posterior. 
 

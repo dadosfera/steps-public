@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-def create_rfm_table(session, table_identifier: str, customer_id_col: str, date_col: str, monetary_col: str):
+def create_rfm_table(session, table_identifier: str, customer_id_col: str, date_col: str, monetary_col: str) -> List[str]:
     df = session.sql(f"""WITH model AS (
                         SELECT
                             {customer_id_col} as CUSTOMER_ID,
@@ -80,7 +80,7 @@ def create_rfm_table(session, table_identifier: str, customer_id_col: str, date_
                     SELECT model.*,
                           last_transactions.* EXCLUDE (CUSTOMER_ID)
                     FROM model
-                    LEFT JOIN last_transactions ON model.CUSTOMER_ID=last_transactions.CUSTOMER_ID""").collect()
+                    LEFT JOIN last_transactions ON model.CUSTOMER_ID=last_transactions.CUSTOMER_ID""")
     return df.queries
 
 def orchest_handler():
