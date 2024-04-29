@@ -1,0 +1,115 @@
+{
+    "type": "Categorization",
+    "elements": [
+      {
+        "type": "Category",
+        "label": "Main Configuration",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/secret_id",
+                "label": "Secret Id"
+              }
+            ]
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/output_type",
+                "label": "Output Type"
+              }
+            ]
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/table_identifier",
+                "label": "Table Identifier (ex: PUBLIC.TABLE_NAME)"
+              }
+            ]
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/customer_id_col",
+                "label": "Customer ID column (ex: CUSTOMER_ID)"
+              }
+            ]
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/date_col",
+                "label": "Date column (ex: LASTBUY_DATE)"
+              }
+            ]
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/monetary_col",
+                "label": "Monetary column values (ex: REVENUE)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Category",
+        "label": "Output Configuration",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/definitions/output_filepath",
+                "label": "Output Filepath"
+              }
+            ],
+            "rule": {
+              "effect": "SHOW",
+              "condition": {
+                "scope": "#/properties/output_type",
+                "schema": {
+                  "const": "to_filepath"
+                }
+              }
+            }
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/definitions/output_variable_name",
+                "label": "Output Variable Name"
+              }
+            ],
+            "rule": {
+              "effect": "SHOW",
+              "condition": {
+                "scope": "#/properties/output_type",
+                "schema": {
+                  "const": "to_outgoing_variable"
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
