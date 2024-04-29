@@ -25,7 +25,7 @@ python rfm_analysis.py config.json
 Exemplo de `config.json`:
 ```json
 {
-  "secret_id": "<seu_id_secreto_snowflake>",
+  "secret_id": "<credencial_do_cliente>",
   "table_identifier": "<identificador_da_tabela_fonte>",
   "customer_id_col": "<coluna_de_identificação_do_cliente>",
   "date_col": "<coluna_de_datas>",
@@ -39,7 +39,7 @@ Se estiver integrando com uma plataforma de orquestração como o Módulo de Tra
 
 Parâmetros do step:
 Os seguintes parâmetros deverão ser fornecidos ao executar o script:
-- `secret_id`: ID secreto do Snowflake
+- `secret_id`: Credencial do cliente no AWS Secret Manager
 - `table_identifier`: Identificador da tabela fonte no Snowflake
 - `customer_id_col`: Coluna contendo IDs dos clientes
 - `date_col`: Coluna contendo datas de compra
