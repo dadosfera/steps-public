@@ -1,4 +1,3 @@
-```
 # Step de Mesclar Tabelas no Snowflake
 
 Este STEP permite mesclar tabelas alvo no Snowflake usando dados de entrada fornecidos de algum processo anterior ou mesmo de outro ativo de dados no Snowflake. O STEP possui uma feature que procura compatibilizar os DataTypes entre as colunas das tabelas Source e Target.
