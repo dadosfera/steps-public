@@ -1,54 +1,55 @@
 {
   "type": "VerticalLayout",
   "elements": [
-    {
-      "type": "HorizontalLayout",
-      "elements": [
         {
-          "type": "Control",
-          "scope": "#/properties/output_variable_name",
-          "label": "Output Variable Name"
-        }]
-    },
-    {
-      "type": "HorizontalLayout",
-      "elements": [
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/secret_id",
+              "label": "SecretsManager secret_id"
+            }
+          ]
+        },
         {
-          "type": "Control",
-          "scope": "#/properties/secret_id",
-          "label": "Secrets Manager Secret ID"
-        }]
-    },
-    {
-      "type": "HorizontalLayout",
-      "elements": [
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+                "type": "Control",
+                "scope": "#/properties/source_table",
+                "label": "Source Table (pd.DataFrame, List of Dictionaries or path name from table at Snowflake)"
+            }
+          ]
+        },
         {
-          "type": "Control",
-          "scope": "#/properties/left_table",
-          "label": "Incoming Variable Name of Left Table"
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+                "type": "Control",
+                "scope": "#/properties/target_table",
+                "label": "Target Table \"PUBLIC\".\"TABLE_NAME\""
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+                "type": "Control",
+                "scope": "#/properties/source_on",
+                "label": "List of columns to Merge on from Source Table"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+                "type": "Control",
+                "scope": "#/properties/target_on",
+                "label": "List of columns to Merge on from Target Table"
+            }
+          ]
         }
-      ]
-    },
-    {
-      "type": "HorizontalLayout",
-      "elements": [
-        {
-          "type": "Control",
-          "scope": "#/properties/right_table",
-          "label": "Incoming Variable Name of Right Table"
-        }
-      ]
-    },
-    {
-      "type": "HorizontalLayout",
-      "elements": [
-        {
-          "type": "Control",
-          "scope": "#/properties/columns_to_remove",
-          "label": "Columns To Merge"
-        }
-      ]
-    }
   ]
-
 }

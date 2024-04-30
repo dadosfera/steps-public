@@ -1,33 +1,36 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "Merge Tables from Snowflake in Pandas Dataframe",
-    "description": "Schema for input validation to the function merge_tables_from_snowflake",
-    "type": "object",
-    "properties": {
-    "secret_id": {
-        "type": "string",
-        "description": "The id of the secret"
-    },
-    "left_table": {
-      "default": "Type of run of the step",
-      "type": "string"
-    },
-    "right_table": {
-      "default": "Type of run of the step",
-      "type": "string"
-    },
-    "columns_to_merge": {
-        "type": "array",
-        "minItems": 1,
-        "items": {
-          "description": "Columns to merge on left and right",
-          "type": "string"
-        }
-      },  
-    "output_variable_name": {
-        "default": "The output variable name",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Merge objects in snowflake",
+  "type": "object",
+  "properties": {
+  "secret_id": {
+      "type": "string",
+      "description": "SecretsManager secret_id"
+  },
+  "source_table": {
+    "default": "Source table to merge ",
+    "type": "string"
+  },
+  "target_table": {
+    "default": "Target table from Snowflake to merge",
+    "type": "string"
+  },
+  "source_on": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "description": "List of columns to merge on from Source table",
         "type": "string"
       }
     },
-    "required": ["secret_id", "left_table", "right_table", "output_variable_name", "columns_to_merge"]
+  "target_on": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "description": "List of columns to merge on from Target table",
+        "type": "string"
+      }
+    }
+  },
+  "required": ["secret_id", "source_table", "target_table", "source_on", "target_on"]
 }
