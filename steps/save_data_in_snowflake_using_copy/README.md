@@ -40,5 +40,13 @@ _Observação_: É fundamental fornecer corretamente o nome da variável de entr
 }
 ```
 
+## Exemplos de pipeline salvando em arquivo
+Quando é escolhido a opção de salvar em arquivo, salvamos os arquivo no código fonte  
+Em [MAIN CONFIGURARION](./main_configuration.png) vamos setar os campos: secret_id, table_name e input_type  
+O nome da tabela é por padrão: PUBLIC.TB_NAME  
+Nesse caso, como estamos "puxando" os dados de um arquivo que foi salvo no código fonte vamos selecionar from_filepath  
+Como foi escolhido from_filepath o nome do arquivo, deverá ser passado em [INPUT CONFIGURATION](./input_configuration.png)   
+
+
 Para consultar o nome da secret, entre em contato com o suporte.
 
