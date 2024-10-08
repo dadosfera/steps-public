@@ -40,12 +40,15 @@ _Observação_: É fundamental fornecer corretamente o nome da variável de entr
 }
 ```
 
-## Exemplos de pipeline salvando em arquivo
+## Exemplos de pipeline salvando em arquivo  
 Quando é escolhido a opção de salvar em arquivo, salvamos os arquivo no código fonte  
 Em [MAIN CONFIGURARION](./main_configuration.png) vamos setar os campos: secret_id, table_name e input_type  
 O nome da tabela é por padrão: PUBLIC.TB_NAME  
 Nesse caso, como estamos "puxando" os dados de um arquivo que foi salvo no código fonte vamos selecionar from_filepath  
 Como foi escolhido from_filepath o nome do arquivo, deverá ser passado em [INPUT CONFIGURATION](./input_configuration.png)   
+
+Vale lembrar que nesse caso de salvar os dados de um arquivo (.csv por exemplo) no Snowflake pode ser importante entender os arquivos save_data_in_snowflake_using_copy.py.uischema.json e save_data_in_snowflake_using_copy.py.schema.json  
+Esses dois arquivos são fundamentais para entendimento de como o step vai ser interagido ao setar MAIN CONFIGURARION e INPUT CONFIGURATION  
 
 
 Para consultar o nome da secret, entre em contato com o suporte.
