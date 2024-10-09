@@ -40,16 +40,43 @@ _Observação_: É fundamental fornecer corretamente o nome da variável de entr
 }
 ```
 
-## Exemplos de pipeline salvando em arquivo  
-Quando é escolhido a opção de salvar em arquivo, salvamos os arquivo no código fonte  
-Em [MAIN CONFIGURARION](./main_configuration.png) vamos setar os campos: secret_id, table_name e input_type  
-O nome da tabela é por padrão: PUBLIC.TB_NAME  
-Nesse caso, como estamos "puxando" os dados de um arquivo que foi salvo no código fonte vamos selecionar from_filepath  
-Como foi escolhido from_filepath o nome do arquivo, deverá ser passado em [INPUT CONFIGURATION](./input_configuration.png)   
+## Exemplos de pipeline 
+Para salvar o arquivo processado em tabela no Snowflake existe dois procedimentos compatíveis até o momento:  
+- arquivo  
+- variável (sem documentação por enquanto)  
+### Salvando em arquivo  
+O arquivo deve ser salvo no código fonte  
+[MAIN CONFIGURARION:](./main_configuration.png)  
+- **SecretsManager** secret_id  
+- **Table Identifier** PUBLIC.TABLE_NAME  
+- **Input Type**   
 
-Vale lembrar que nesse caso de salvar os dados de um arquivo (.csv por exemplo) no Snowflake pode ser importante entender os arquivos save_data_in_snowflake_using_copy.py.uischema.json e save_data_in_snowflake_using_copy.py.schema.json  
-Esses dois arquivos são fundamentais para entendimento de como o step vai ser interagido ao setar MAIN CONFIGURARION e INPUT CONFIGURATION  
+SecretsManager, deve ser consultado entrando em contato com o suporte   
+Table Identifier é o nome da tabela e por padrão é: PUBLIC.TB_NOME_DA_TABELA  
+  Nesse caso vamos usar o Schema como PUBLIC. Vale lembrar, que no Snowflake dentro da Dadosfera os tipos de **Schema** são:  
+    - **PUBLIC** (raw, landing-zone)  
+    - **STAGING**  
+    - **CURATED**  
+Input Type pode ser `from_filepath` ou `from_incoming_variable`  
 
+No nosso exemplo vamos usar `from_filepath`, pois buscamos os dados que serão salvos no Snowflake diretamente do arquivo salvo no código fonte que será setado em:  
+[INPUT CONFIGURATION](./input_configuration.png)   
+- **Input Filepath**  
+- **File Format**  
+- **Delimiter**  
+- **Skip Header**  
 
-Para consultar o nome da secret, entre em contato com o suporte.
+OBS:  
+Não existe ainda a opção de setar o parse_header pelo Input. Por default a Dadosfera considera parse_header igual a `True`, o que significa que a primeira linha será o header.  
+Para alterar esse parâmetro procurar por `parse_header` no arquivo save_data_in_snowflake_using_copy.py e setar a variável para `False`.  
+
+### [Em desenvolvimento]
+Para usar os dados processado na pipeline deve ser usado 
+- `from_incoming_variable`
+Porém ainda estamos trabalhando nesse sentido.
+
+## Dicas 
+- Pode ser importante entender os arquivos save_data_in_snowflake_using_copy.py.uischema.json e save_data_in_snowflake_using_copy.py.schema.json  
+- Esses dois arquivos são fundamentais para entendimento de como o step vai ser interagido ao setar MAIN CONFIGURARION e INPUT CONFIGURATION  
+- Para consultar o nome da secret, entre em contato com o suporte.
 
