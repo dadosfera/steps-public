@@ -110,7 +110,7 @@
           "rule": {
             "effect": "SHOW",
             "condition": {
-              "scope": "#/properties/file_formats",
+              "scope": "#/properties/file_format",
               "schema": {
                 "const": "csv"
               }

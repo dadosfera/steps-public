@@ -91,6 +91,9 @@ def save_data_from_file(
         if skip_header_option is not None:
             reader = reader.option("skip_header_option", skip_header_option)
 
+        parse_header = True # deveria vim dos parâmetros do Input (mudar json Schema)
+        reader = reader.option("parse_header", parse_header)
+
         result_df = reader.csv(f"@my_internal_stage/{transformed_tbl_identifier}")
 
     logger.info("Saving data to snowflake")
