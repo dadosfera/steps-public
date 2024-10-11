@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Delete intelligence project step Schema",
+  "description": "JSON schema for deleting project in dadosfera intelligence",
+  "type": "object",
+  "properties": {
+    "incoming_variable_name": {
+      "description": "Name of the incoming variable",
+      "type": "string",
+      "minLength": 1
+    },
+    "base_url": {
+      "description": "Base URL for API requests",
+      "type": "string",
+      "format": "uri"
+    },
+    "auth_token": {
+      "description": "Authentication token",
+      "type": "string",
+      "minLength": 1
+    },
+    "auth_username": {
+      "description": "Username for authentication",
+      "type": "string",
+      "minLength": 1
+    },
+    "auth_user_uuid": {
+      "description": "User UUID for authentication",
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[0-9a-fA-F-]{36}$"
+    }
+  },
+  "required": ["incoming_variable_name", "base_url", "auth_token", "auth_username", "auth_user_uuid"],
+  "additionalProperties": false
+}
