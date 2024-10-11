@@ -1,0 +1,30 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "scope": "#/properties/incoming_variable_name",
+      "label": "Incoming Variable Name"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/base_url",
+      "label": "Base URL"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/auth_token",
+      "label": "Authentication Token"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/auth_username",
+      "label": "Authentication Username"
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/auth_user_uuid",
+      "label": "Authentication User UUID"
+    }
+  ]
+}
