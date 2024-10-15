@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Merge objects in snowflake",
+  "type": "object",
+  "properties": {
+  "secret_id": {
+      "type": "string",
+      "description": "SecretsManager secret_id"
+  },
+  "source_table": {
+    "default": "Source table to merge ",
+    "type": "string"
+  },
+  "target_table": {
+    "default": "Target table from Snowflake to merge",
+    "type": "string"
+  },
+  "source_on": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "description": "List of columns to merge on from Source table",
+        "type": "string"
+      }
+    },
+  "target_on": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "description": "List of columns to merge on from Target table",
+        "type": "string"
+      }
+    }
+  },
+  "required": ["secret_id", "source_table", "target_table", "source_on", "target_on"]
+}

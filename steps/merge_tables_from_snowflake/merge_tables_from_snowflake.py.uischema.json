@@ -1,0 +1,55 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/secret_id",
+              "label": "SecretsManager secret_id"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+                "type": "Control",
+                "scope": "#/properties/source_table",
+                "label": "Source Table (pd.DataFrame, List of Dictionaries or path name from table at Snowflake)"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+                "type": "Control",
+                "scope": "#/properties/target_table",
+                "label": "Target Table \"PUBLIC\".\"TABLE_NAME\""
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+                "type": "Control",
+                "scope": "#/properties/source_on",
+                "label": "List of columns to Merge on from Source Table"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+                "type": "Control",
+                "scope": "#/properties/target_on",
+                "label": "List of columns to Merge on from Target Table"
+            }
+          ]
+        }
+  ]
+}
