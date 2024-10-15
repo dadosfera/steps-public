@@ -44,7 +44,15 @@ def get_keys(data_frame, column_name):
     return json.loads(keys[0].KEYS)
 
 def normalized_column_name(keys):
-    return keys.replace("-", "_")
+    invalid_symbols = [
+        " ", "\t", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "+", "=", 
+        "{", "}", "[", "]", ":", ";", "'", "\"", "|", "\\", "<", ">", ",", ".", 
+        "/", "?", "!", "~", "`"
+    ]
+    for symbol in invalid_symbols:
+        keys = keys.replace(symbol, "_")
+    return keys
+
 
 def replace_quotes(string):
     return string.replace("\"","")
