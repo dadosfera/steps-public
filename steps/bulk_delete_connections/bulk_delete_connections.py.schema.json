@@ -1,0 +1,36 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Bulk Delete Connections",
+    "description": "Schema for input validation to the function",
+    "type": "object",
+    "properties": {
+        "maestro_base_url": {
+            "description": "The base url for the Maestro API",
+            "type": "string",
+            "enum": [
+                "https://maestro.dadosfera.ai",
+                "https://maestro.stg.dadosfera.ai"
+            ]
+        },
+        "additional_params": {
+            "type": "array",
+            "description": "Params used to filter the connections that will be deleted",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "key": {
+                        "type": "string",
+                        "description": "The name of the filter key"
+                    },
+                    "value": {
+                        "type": "string",
+                        "description": "The value of the filter"
+                    }
+                }
+            }
+        }
+    },
+    "required": [
+        "maestro_base_url"
+    ]
+}
