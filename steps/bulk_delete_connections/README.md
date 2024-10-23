@@ -1,5 +1,6 @@
 # Get Connection Documentation
 
+
 [Maestro](https://maestro.dadosfera.ai) is an API platform, offering a range of solutions for data management. The given schema facilitates bulk deletion of connection via its API, allowing users to specify various parameters.
 
 ## Summary
