@@ -1,0 +1,31 @@
+{
+  "type": "Categorization",
+  "elements": [
+      {
+          "type": "Category",
+          "label": "API Settings",
+          "elements": [
+              {
+                  "type": "HorizontalLayout",
+                  "elements": [
+                      {
+                          "type": "Control",
+                          "scope": "#/properties/maestro_base_url",
+                          "label": "The base url of the Maestro API"
+                      }
+                  ]
+              },
+              {
+                "type": "HorizontalLayout",
+                "elements": [
+                    {
+                        "type": "Control",
+                        "scope": "#/properties/additional_params",
+                        "label": "Additional Params provided to filter the assets"
+                    }
+                ]
+            }
+          ]
+      }
+  ]
+}
