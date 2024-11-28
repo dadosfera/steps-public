@@ -1,0 +1,22 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "scope": "#/properties/secret_id",
+      "label": "Secret ID",
+      "options": {
+        "placeholder": "Enter the secret ID to connect to Snowflake",
+        "focus": true
+      }
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/table_name",
+      "label": "Table Name",
+      "options": {
+        "placeholder": "Enter the Snowflake table name"
+      }
+    }
+  ]
+}
