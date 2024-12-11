@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "Schema for input validation to the function",
+    "properties": {
+      "c2s_path": {
+        "description": "The path to C2S API (e.g., '/leads')",
+        "type": "string"
+      },
+      "params": {
+        "additionalProperties": {
+          "description": "Value of the query parameter",
+          "type": "string"
+        },
+        "description": "Query parameters for the API request",
+        "type": "object"
+      }
+    },
+    "required": [
+      "c2s_path",
+      "params"
+    ],
+    "title": "Get Data From C2S",
+    "type": "object"
+  }
