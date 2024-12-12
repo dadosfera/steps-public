@@ -32,27 +32,58 @@ def main():
     headers = {
         'Authorization': f'Bearer {TOKEN}',
     }
+    
+    all_results = []
 
-    try:
-        # Make the GET request to the API
-        logger.debug(f"Making GET request to URL: {url} with parameters: {PARAMS}")
-        response = requests.get(url, headers=headers, params=PARAMS)
-        
-        # Raise an error if the request was unsuccessful
-        response.raise_for_status()
+    # Check if the path is for 'leads' and if 'page' is a list
+    if 'leads' in PATH_URL and isinstance(PARAMS.get('page'), list) and PARAMS['page']:
+        # Iterate through the list of pages and collect data
+        for page in PARAMS['page']:
+            # Update the page parameter for the current page in the iteration
+            PARAMS['page'] = page
+            
+            try:
+                # Make the GET request to the API
+                logger.debug(f"Making GET request to URL: {url} with parameters: {PARAMS}")
+                response = requests.get(url, headers=headers, params=PARAMS)
 
-        # Log and print the response
-        logger.info("Request successful. Response received.")
-        logger.debug(f"Response JSON: {response.json()}")
-        print(url, PARAMS)
-        print(response.json())
+                # Log and accumulate the results
+                logger.info(f"Request successful for page {page}.")
+                data = response.json()
+                # logger.debug(f"Response JSON: {data}")
 
-    except requests.exceptions.RequestException as e:
-        # Log and print errors if the request fails
-        logger.error(f"Request failed: {e}")
-        raise e
+                if data.get('data'):
+                    all_results.extend(data['data'])
 
-    return response
+
+            except requests.exceptions.RequestException as e:
+                # Log and print errors if the request fails
+                logger.error(f"Request failed for page {page}: {e}")
+                raise e
+
+        # Return the accumulated results after processing all pages
+        logger.debug(f"Response JSON: {all_results}")
+        return all_results
+
+    else:
+        try:
+            # Make the GET request to the API
+            logger.debug(f"Making GET request to URL: {url} with parameters: {PARAMS}")
+            response = requests.get(url, headers=headers, params=PARAMS)
+            
+            # Raise an error if the request was unsuccessful
+            response.raise_for_status()
+
+            # Log the response
+            logger.info("Request successful. Response received.")
+            logger.debug(f"Response JSON: {response.json()}")
+
+        except requests.exceptions.RequestException as e:
+            # Log errors if the request fails
+            logger.error(f"Request failed: {e}")
+            raise e
+
+        return response
 
 
 if __name__ == '__main__':
