@@ -63,7 +63,9 @@ def main():
 
         # Return the accumulated results after processing all pages
         logger.debug(f"Response JSON: {all_results}")
-        return all_results
+
+        # Save the result as an output for the next pipeline step
+        orchest.output(all_results, name="response")
 
     else:
         try:
@@ -83,7 +85,8 @@ def main():
             logger.error(f"Request failed: {e}")
             raise e
 
-        return response
+        # Save the result as an output for the next pipeline step
+        orchest.output(response.json(), name="response")
 
 
 if __name__ == '__main__':
