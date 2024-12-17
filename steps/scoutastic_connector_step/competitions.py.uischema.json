@@ -1,0 +1,21 @@
+{
+    "type": "Categorization",
+    "elements": [
+        {
+            "type": "Category",
+            "label": "Main Configuration",
+            "elements": [
+                {
+                    "type": "Control",
+                    "scope": "#/properties/team_identifier",
+                    "label": "Identificador do time na API Scoutastic para acesso - ex. galo"
+                },
+                {
+                    "type": "Control",
+                    "scope": "#/properties/competitions_ids",
+                    "label": "Lista com id das competições (separadas por vírgulas - ex. bra1,mexa)"
+                }
+            ]
+        }
+    ]
+}

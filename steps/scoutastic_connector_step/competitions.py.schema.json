@@ -1,0 +1,15 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "team_identifier": {
+            "type": "string",
+            "description": "Identificador do time na API Scoutastic para acesso"
+        },
+        "competitions_ids": {
+            "type": "string",
+            "description": "Lista com IDs das competições (separadas por vírgulas, ex: 'bra1,mexa')"
+        }
+    },
+    "required": ["team_identifier", "competitions_ids"]
+}
