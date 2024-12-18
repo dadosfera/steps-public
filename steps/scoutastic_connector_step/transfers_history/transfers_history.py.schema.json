@@ -1,0 +1,15 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "team_identifier": {
+            "type": "string",
+            "description": "Identificador do time na API Scoutastic para acesso"
+        },
+        "season": {
+            "type": "integer",
+            "description": "Entre com a season para buscar dados(ex: 2024)"
+        }
+    },
+    "required": ["team_identifier", "season"]
+}
