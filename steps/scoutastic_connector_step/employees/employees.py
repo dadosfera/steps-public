@@ -155,6 +155,8 @@ def script_handler():
 
 if __name__ == "__main__":
     if ORCHEST_STEP_UUID is not None:
+        logger.info("Running as Orchest Step")
         orchest_handler()
     else:
+        logger.info("Running as script")
         script_handler()
