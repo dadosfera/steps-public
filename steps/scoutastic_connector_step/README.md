@@ -71,12 +71,13 @@ As seguintes variáveis de ambiente são requeridas para execução do step:
 - Utilize o comando:
 
 ```bash
-    python players_missed.py '{"auth_token": "Bearer <seu_token_aqui>", "team_identifier": "galo", "player_ids": "PLAYER1,PLAYER2,PLAYER3"}'
+    python players_missed.py '{"auth_token": "Bearer <seu_token_aqui>",
+    "team_identifier": "galo", "player_ids": "PLAYER1,PLAYER2,PLAYER3"}'
 ```
 
 O script irá coletar dados e salvar no arquivo players_missed_data.json.
 
-## No orchest
+### No orchest
 
 1. Configure os parâmetros SCOUTASTIC_TOKEN, team_identifier e player_ids na interface do Orchest.
 2. Execute o step no Orchest, que coletará dados para o endpoint escolhido.
