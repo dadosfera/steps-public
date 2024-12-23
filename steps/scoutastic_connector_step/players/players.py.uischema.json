@@ -1,0 +1,21 @@
+{
+    "type": "Categorization",
+    "elements": [
+        {
+            "type": "Category",
+            "label": "Main Configuration",
+            "elements": [
+                {
+                    "type": "Control",
+                    "scope": "#/properties/team_identifier",
+                    "label": "Identificador do time na API Scoutastic para acesso - ex. galo"
+                },
+                {
+                    "type": "Control",
+                    "scope": "#/properties/team_id",
+                    "label": "Lista com id dos times (separadas por vírgulas - ex, 13, 63 )"
+                }
+            ]
+        }
+    ]
+}

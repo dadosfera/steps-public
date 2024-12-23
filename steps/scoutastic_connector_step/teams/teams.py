@@ -125,10 +125,10 @@ def script_handler():
 
     auth_token = config.get("auth_token")
     team_identifier = config.get("team_identifier")
-    competitions = config.get("competitions")
+    competitions_ids = config.get("competitions")
 
     competitions = [id.strip().upper()
-                    for id in competitions_param.split(",") if id.strip()]
+                    for id in competitions_ids.split(",") if id.strip()]
 
     if not auth_token or not team_identifier or not competitions:
         raise ValueError(

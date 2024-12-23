@@ -1,0 +1,21 @@
+{
+    "type": "Categorization",
+    "elements": [
+        {
+            "type": "Category",
+            "label": "Main Configuration",
+            "elements": [
+                {
+                    "type": "Control",
+                    "scope": "#/properties/team_identifier",
+                    "label": "Identificador do time na API Scoutastic para acesso - ex. galo"
+                },
+                {
+                    "type": "Control",
+                    "scope": "#/properties/player_ids",
+                    "label": "Lista com id dos jogadores (separados por virgula - ex. 63077, 764294)"
+                }
+            ]
+        }
+    ]
+}
