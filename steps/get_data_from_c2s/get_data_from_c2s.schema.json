@@ -1,0 +1,10 @@
+{
+    "type": "object",
+    "properties": {
+        "instance_url": {
+            "description": "Base URL for the inteligence module",
+            "type": "string"
+        }
+    },
+    "required": ["instance_url"]
+}

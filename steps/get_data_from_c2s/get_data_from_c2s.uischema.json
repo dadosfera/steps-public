@@ -1,0 +1,21 @@
+{
+    "type": "Categorization",
+    "elements": [
+        {
+            "type": "Category",
+            "label": "Main Configuration",
+            "elements": [
+                {
+                    "type": "HorizontalLayout",
+                    "elements": [
+                        {
+                            "type": "Control",
+                            "scope": "#/properties/instance_url",
+                            "label": "Platform API Base URL"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
