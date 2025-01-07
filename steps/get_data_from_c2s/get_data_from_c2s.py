@@ -174,7 +174,32 @@ class C2SLead:
 
         return max_dt.strftime("%Y-%m-%dT%H:%M:%SZ") if max_dt else None
 
-    def run(self):
+    def save_to_snowflake(self, snowpark, all_results, table_identifier):
+        """
+        Receives a list of leads and saves them to Snowflake by Snowpark.
+        """
+        if not table_identifier:
+            self.logger.info(
+                "[save_to_snowflake] No table identifier provided. Skipping save operation.")
+            return
+
+        try:
+            logger.info(
+                "[save_to_snowflake] Converting list to Snowpark DataFrame...")
+            df_leads = snowpark.createDataFrame(all_results)
+
+            table_identifier = "DADOSFERA_PRD_IBRAM.PROLAR.TB_RAW_LEADS"
+            logger.info(f"[save_to_snowflake] Saving DataFrame to table {
+                        table_identifier} (append mode)...")
+            df_leads.write.mode("append").save_as_table(table_identifier)
+            logger.info(f"[save_to_snowflake] DataFrame successfully saved to {
+                        table_identifier}.")
+        except Exception as e:
+            logger.error(
+                f"[save_to_snowflake] Error saving data to Snowflake: {e}")
+            raise e
+
+    def run(self, snowpark, table_identifier=None):
         """
         Main method to orchestrate the process.
         """
@@ -198,6 +223,8 @@ class C2SLead:
                     self.logger.info(
                         "[run] No valid 'updated_at' found to save.")
 
+                self.save_to_snowflake(snowpark, leads, table_identifier)
+
         except Exception as e:
             self.logger.error(f"Error occured: {e}")
             raise
@@ -206,6 +233,7 @@ class C2SLead:
 def orchest_handler():
     base_url = orchest.get_step_param('url')
     token = os.getenv("C2S_AUTHENTICATOR_TOKEN")
+    table_identifier = orchest.get_step_param('table_identifier')
 
     if not token:
         raise Exception("C2S_AUTHENTICATOR_TOKEN is required")
@@ -215,7 +243,8 @@ def orchest_handler():
         instance_url=base_url,
         token=token
     )
-    handler.run()
+    snowpark = get_snowpark_session(os.getenv("SECRET_ID"))
+    handler.run(snowpark, table_identifier)
 
 
 def script_handler():
@@ -227,6 +256,7 @@ def script_handler():
 
     base_url = config.get("url")
     token = config.get("token")
+    table_identifier = config.get("table_identifier")
 
     if not base_url or not token:
         raise ValueError(
@@ -237,7 +267,8 @@ def script_handler():
         instance_url=base_url,
         token=token
     )
-    handler.run()
+    snowpark = get_snowpark_session(os.getenv("SECRET_ID"))
+    handler.run(snowpark, table_identifier)
 
 
 if __name__ == "__main__":
