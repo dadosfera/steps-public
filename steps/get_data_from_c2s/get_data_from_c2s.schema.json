@@ -4,7 +4,11 @@
         "instance_url": {
             "description": "Base URL for the inteligence module",
             "type": "string"
+        },
+        "table_identifier": {
+            "description": "Table identifier for the saved data",
+            "type": "string"
         }
     },
-    "required": ["instance_url"]
+    "required": ["instance_url", "table_identifier"]
 }
