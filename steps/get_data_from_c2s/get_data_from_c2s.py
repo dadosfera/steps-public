@@ -188,7 +188,6 @@ class C2SLead:
                 "[save_to_snowflake] Converting list to Snowpark DataFrame...")
             df_leads = snowpark.createDataFrame(all_results)
 
-            table_identifier = "DADOSFERA_PRD_IBRAM.PROLAR.TB_RAW_LEADS"
             logger.info(f"[save_to_snowflake] Saving DataFrame to table {
                         table_identifier} (append mode)...")
             df_leads.write.mode("append").save_as_table(table_identifier)
