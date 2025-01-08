@@ -1,0 +1,31 @@
+{
+    "type": "Categorization",
+    "elements": [
+        {
+            "type": "Category",
+            "label": "Main Configuration",
+            "elements": [
+                {
+                    "type": "HorizontalLayout",
+                    "elements": [
+                        {
+                            "type": "Control",
+                            "scope": "#/properties/instance_url",
+                            "label": "Platform API Base URL"
+                        }
+                    ]
+                },
+                {
+                    "type": "HorizontalLayout",
+                    "elements": [
+                        {
+                            "type": "Control",
+                            "scope": "#/properties/table_identifier",
+                            "label": "Table Identifier for the Saved Data (e.g., <DATABASE_NAME>.<SCHEMA_NAME>.<TABLE_NAME>). Leave blank if saving data is not required."
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
