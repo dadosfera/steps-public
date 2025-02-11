@@ -1,0 +1,62 @@
+{
+    "definitions": {
+        "incoming_variable_name": {
+        "type": "string",
+        "description": "The name of the incoming variable name"
+        },
+        "input_filepaths": {
+        "type": "array",
+        "items": {
+            "type": "string",
+            "description": "The input filepath that will be read"
+        }
+        }
+    },
+    "type": "object",
+    "properties": {
+        "bucket_name": {
+        "type": "string",
+        "description": "The name of the S3 bucket"
+        },
+        "prefix": {
+        "type": "string",
+        "description": "The key for the object within the S3 bucket"
+        },
+        "file_extension": {
+        "type": "string",
+        "description": "The file extension of the saved files"
+        },
+        "input_type": {
+        "type": "string",
+        "enum": [
+            "from_incoming_variable",
+            "from_step_param"
+        ],
+        "description": "Defines the input source type"
+        },
+        "incoming_variable_name": {
+        "type": "string",
+        "description": "The name of the incoming variable"
+        },
+        "cod_cli_sponte": {
+        "type": "string",
+        "description": "The client or clients code from Sponte, for example(one client): 123 - for example(many clients): 123, 124, 125"
+        },
+        "data_extracao": {
+        "type": "string",
+        "description": "The extraction date, for example: 2025-01-01"
+        },
+        "endpoint": {
+        "type": "string",
+        "description": "The API endpoint being used"
+        }
+    },
+    "required": [
+        "bucket_name",
+        "prefix",
+        "input_type",
+        "incoming_variable_name",
+        "data_extracao",
+        "endpoint"
+    ]
+}

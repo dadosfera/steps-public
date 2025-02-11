@@ -1,0 +1,87 @@
+{
+    "type": "Categorization",
+    "elements": [
+      {
+        "type": "Category",
+        "label": "Main Configuration",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/bucket_name",
+                "label": "Bucket Name"
+              }
+            ]
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/prefix",
+                "label": "Prefix"
+              }
+            ]
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/input_type",
+                "label": "Input Type"
+              }
+            ]
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "/properties/cod_cli_sponte",
+                "label": "Client Code (Sponte)"
+              }
+            ]
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "/properties/data_extracao",
+                "label": "Extraction Date"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Category",
+        "label": "Input Configuration",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/incoming_variable_name",
+                "label": "Incoming Variable Name"
+              }
+            ],
+            "rule": {
+              "effect": "SHOW",
+              "condition": {
+                "scope": "#/properties/input_type",
+                "schema": {
+                  "const": "from_incoming_variable"
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+  

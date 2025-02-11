@@ -1,0 +1,111 @@
+# Conector de dados - Sponte
+
+Este passo (step) realiza a coleta de dados a partir da API da Sponte, --complementar
+
+## Step get_sponte_data
+
+### Visão Geral
+este conector interage com o endpoint:
+
+'''
+    GET https://sponte-bi.sponteweb.com.br/api/v1/extracoes/{endpoint}
+'''
+
+Respeitando:
+
+- Limite de 1000 requisições por minuto, separados por todos os endpoints e fazendo o cálculo automático de máximo de requisições por step no módulo.
+- Filtro incremental através da DataExtracao, que trás somente dados atualizados a partir de uma data da última requisição.
+
+Caso não exista histórico de execução (primeira vez), é feita uma carga completa (full load), coletando todos os registros disponíveis do endpoint a partir da "DataExtracao" colocada no formulário do Step. Em execuções subsequentes, o script obtém apenas os registros que foram atualizados após a última data registrada.
+
+### Arquivos e Variáveis Principais
+
+- get_sponte_data.py: Arquivo Python com a lógica de coleta, onde ficam as funções:
+    - get_last_update();
+    - save_last_update();
+    - find_max_updated_at();
+    - fetch_data();
+    - clean_data();
+    - process_and_upload_to_s3();
+    - run()
+- state/last_update_{endpoint}.json: Arquivo que armazena a última data/hora de atualização (formato ISO 8601 com Z no final). Se este arquivo não existir (ou estiver inválido), o script faz Full Load.
+
+### Variáveis de Ambiente para configuração:
+    
+    - api_key: x-api-key da conexão Sponte do cliente.
+    
+### Variáveis do step para configuração:
+    
+  - endpoint: Endpoint que irá ser extraído os dados
+  - input_type: Tipo de input que o step irá receber, selecionar entre: from_incoming_variable e from_step_param
+      se input_type = "from_incoming_variable"
+          - incoming_variable_name: Adicionar nome da variável do step anterior
+      se input_type = "from_step_param"
+          - cod_cli_sponte: Adicionar os códigos de clientes Sponte que vão ser extraídos. Pode ser 1 código ou vários, por exemplo: 123, 124, 125*
+              * Se for mais de 1 código, separar por vírgulas
+          - data_extracao: Adicionar a Data inicial que deseja fazer a extração dos dados no formato "YYYY-MM-DD", Exemplo de formato: "2025-01-01"
+  - bucket_name: Bucket do S3 onde vão ser carregado os arquivos
+  - prefix: prefixo de pastas onde vão ser carregado os arquivos dentro do bucket. Exemplo: "Sponte/incremental/endpoint"
+  
+### Como Funciona o Fluxo
+
+1. Verificação do Arquivo de Histórico (last_update.json)
+- O script chama get_last_update() para verificar se existe uma data/hora salva.
+    - Se não existir, considera `None` → Full Load a partir da data de extração fornecida no step.
+    - Se existir (ex.: `"2024-12-27T10:46:28Z"`), o script usa esse valor → Incremental.
+    
+2. Coleta dos Dados (`fetch_data()`)
+
+- Monta a requisição com parâmetros passados (DataExtracao e CodCliSponte)
+- Executa requisições em loop até alcançar o total de registros informado pela API.
+- Respeita o limite de 1000 requisições por minuto divididos entre todos os endpoints, realizando `time.sleep(60)` quando atinge esse valor.
+
+3. Processamento e Salvamento
+
+- Todos os leads são acumulados em `all_data`.
+- O script converte a lista de dicionários em um arquivo Parquet e grava no bucket S3 informado nas configurações do step.
+
+4. Atualização do `last_update`
+
+- Ao final da coleta, o script chama `find_max_updated_at()` para descobrir a maior data/hora de atualização dos dados retornados.
+- Se encontrar um valor (`DataExtracao`), ele é salvo em last_update_{endpoint}.json pela função `save_last_update()`.
+
+5. Execução Futura
+
+- Na próxima execução, a função `get_last_update()` encontra esse valor
+    → o script busca apenas registros atualizados após esse timestamp, reduzindo a carga e tempo de processamento, realizando somente carga incremental.
+    
+### Como Executar
+
+1. Instale Dependências
+
+- Verifique se possui requests, json, time e outras bibliotecas padrão do Python 3.
+
+2. Configure as Variáveis
+
+- Ajuste os valores obrigatórios do step.
+- Defina o api_key válido na Sponte.
+- Ajuste LAST_UPDATE_PATH, se desejar um caminho diferente (padrão: state/last_update_{endpoint}.json).
+
+4. Rode o Script
+
+- Na primeira execução, o script não encontrará state/last_update_{endpoint}.json e fará o full load a partir da DataExtracao fornecida.
+- Ao final, criará (ou atualizará) o arquivo state/last_update_{endpoint}.json com o maior updated_at.
+- Na segunda execução, fará o modo incremental (apenas dados atualizados após a data armazenada).
+
+### Pontos de Atenção
+1. Lista de Códigos Sponte
+- Caso precise de uma lista de códigos da Sponte dinâmica, precisar informar a Dadosfera para desenvolvimento. Se precisar de códigos específicos, o step atende.
+
+2. Número de Registros
+
+- Caso existam muitos endpoints, o script pode demorar para terminar a carga inicial devido ao rate limit (1000 requisições por minuto dividos entre os endpoints).
+
+3. Persistência
+
+- Após obter os dados, você pode salvá-los em um caminho AWS S3 no formato Parquet.
+
+4. Erros e Exceções
+
+- Se a API retornar erro (ex.: 401, 500), o script fará log do problema e a exceção será levantada.
+- Em caso de problemas de rede ou timeouts, revise a lógica de retry/timeout no requests.get().
