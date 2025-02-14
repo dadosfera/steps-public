@@ -24,7 +24,7 @@ endpoint = orchest.get_step_param('endpoint')
 LAST_UPDATE_PATH = f"state/last_update_{endpoint}.json"
 
 # Set URL
-url = f"https://sponte-bi.sponteweb.com.br/api/v1/extracoes/{endpoint}"
+URL = f"https://sponte-bi.sponteweb.com.br/api/v1/extracoes/{endpoint}"
 
 # Cálculo da quantidade máxima de requisições por step
 with open("main.orchest", "r", encoding="utf-8") as file:
@@ -93,7 +93,7 @@ class SponteAPI:
             "%Y-%m-%d",
             "%Y-%m-%dT%H%M%S"
         ]
-
+        
         for d in data:
             attributes = d.get("DataExtracao")
             def parse_datetime(attributes):
@@ -139,7 +139,7 @@ class SponteAPI:
                 'PageNumber': page_number
             }
             try:
-                response = requests.get(url, headers=headers, params=params)
+                response = requests.get(URL, headers=headers, params=params)
                 response.raise_for_status()  # Verifica se houve erro HTTP
                 data = response.json()
                 status_code = response.status_code
@@ -179,7 +179,17 @@ class SponteAPI:
                 if isinstance(item[key], str):
                     item[key] = illegal_chars.sub('', item[key])
         return data
-
+    
+    def process_and_send_df_to_next_step(self, data):
+        outgoing_variable_name = orchest.get_step_param('outgoing_variable_name')
+        
+        df_sponte = pd.DataFrame(data)
+        if df_sponte.empty:
+            self.logger.info("Nenhum dado para processar.")
+            return
+        orchest.output(df_sponte, name=outgoing_variable_name)
+        self.logger.info(f"[process_and_send_df_to_next_step] Dataframe exportado para variável '{outgoing_variable_name}' com sucesso.")
+        
     def process_and_upload_to_s3(self, data, bucket_name, prefix):
         """Converts data to a DataFrame, splits by 'DataExtracao', and uploads each split file to S3."""
         client = boto3.client('s3', region_name='us-east-1')
@@ -211,6 +221,8 @@ class SponteAPI:
         bucket_name = orchest.get_step_param('bucket_name')
         prefix = orchest.get_step_param('prefix')
         
+        output_type = orchest.get_step_param('output_type')
+        
         if prefix is None:
                 prefix = ''
         
@@ -222,43 +234,50 @@ class SponteAPI:
             last_update = self.get_last_update()
 
             if last_update:
-                self.logger.info(f"[main] INCREMENTAL a partir de updated_at={last_update}")
+                self.logger.info(f"[run] INCREMENTAL a partir de updated_at={last_update}")
                 # Parse the timestamp
                 dt = datetime.strptime(last_update, "%Y-%m-%dT%H:%M:%SZ")
                 # Format to date only
                 data_extracao = dt.strftime("%Y-%m-%d")
             else:
-                self.logger.info("[main] FULL LOAD - Nenhum 'last_update' encontrado")
+                self.logger.info("[run] FULL LOAD - Nenhum 'last_update' encontrado")
 
             # Chamada da API de todas as filiais
             for cod_cli in sponte_code_list:
-                self.logger.info(f'[main] Fetching data for CodCliSponte: {cod_cli}')
+                self.logger.info(f'[run] Fetching data for CodCliSponte: {cod_cli}')
                 data, count = self.fetch_data(cod_cli, data_extracao, api_key, count) # Call function
                 all_data.extend(data)
-            self.logger.info(f'[main] Total de registros coletados: {len(all_data)}')
+            self.logger.info(f'[run] Total de registros coletados: {len(all_data)}')
 
             # Limpa os dados
             if all_data:
                 cleaned_data = self.clean_data(all_data)
-                self.logger.info(f"[main] Todos os dados limpos.")
+                self.logger.info(f"[run] Todos os dados limpos.")
             else:
                 cleaned_data = all_data
-                self.logger.info(f"[main] Nenhum dado para limpeza.")
+                self.logger.info(f"[run] Nenhum dado para limpeza.")
 
             if cleaned_data:
-                self.process_and_upload_to_s3(cleaned_data, bucket_name, prefix)
-                self.logger.info("[main] Dados transformados em parquet e fazendo upload para o S3")
+                
+                if output_type == "send_dataframe_to_next_step":
+                    self.process_and_send_df_to_next_step(cleaned_data)
+                    self.logger.info("[run] Dataframe enviado para o próximo step")
+                elif output_type == "upload_to_s3":
+                    self.process_and_upload_to_s3(cleaned_data, bucket_name, prefix)
+                    self.logger.info("[run] Dados transformados em parquet e fazendo upload para o S3")
+                else:
+                    self.logger.info("[run] Nenhum 'updated_at' válido encontrado; nada a salvar.")
                 
                 new_last_update = self.find_max_updated_at(cleaned_data)
-                self.logger.info(f"[main] Valor encontrado: {new_last_update}")
+                self.logger.info(f"[run] Valor encontrado: {new_last_update}")
 
                 if new_last_update:
                     self.save_last_update(new_last_update)
-                    self.logger.info(f"[main] Arquivo '{LAST_UPDATE_PATH}' atualizado.")
+                    self.logger.info(f"[run] Arquivo '{LAST_UPDATE_PATH}' atualizado.")
                 else:
-                    self.logger.info("[main] Nenhum 'updated_at' válido encontrado; nada a salvar.")
+                    self.logger.info("[run] Nenhum 'DataExtracao' válido encontrado; nada a salvar.")
             else:
-                self.logger.info("[main] Nenhum dado retornado. Finalizando o Step")
+                self.logger.info("[run] Nenhum dado retornado. Finalizando o Step")
 
         except Exception as e:
             self.logger.info(f"Ocorreu um erro: {e}")

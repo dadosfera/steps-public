@@ -1,6 +1,6 @@
 # Conector de dados - Sponte
 
-Este passo (step) realiza a coleta de dados a partir da API da Sponte, --complementar
+Este passo (step) realiza a coleta de dados a partir da API da Sponte, respeitando a lógica de Full Load (quando não há histórico de execução) e Incremental (quando já existe um registro de data/hora de atualização).
 
 ## Step get_sponte_data
 
@@ -15,8 +15,13 @@ Respeitando:
 
 - Limite de 1000 requisições por minuto, separados por todos os endpoints e fazendo o cálculo automático de máximo de requisições por step no módulo.
 - Filtro incremental através da DataExtracao, que trás somente dados atualizados a partir de uma data da última requisição.
+- O(s) código(s) do Cliente Sponte passados na configuração do step.
 
-Caso não exista histórico de execução (primeira vez), é feita uma carga completa (full load), coletando todos os registros disponíveis do endpoint a partir da "DataExtracao" colocada no formulário do Step. Em execuções subsequentes, o script obtém apenas os registros que foram atualizados após a última data registrada.
+Caso não exista histórico de execução (primeira vez), é feita uma carga completa (full load), coletando todos os registros disponíveis do endpoint a partir da "DataExtracao" informada no formulário do Step. Em execuções subsequentes, o script obtém apenas os registros que foram atualizados após a última data registrada.
+
+### Exemplo de Requisição
+
+
 
 ### Arquivos e Variáveis Principais
 
@@ -26,6 +31,7 @@ Caso não exista histórico de execução (primeira vez), é feita uma carga com
     - find_max_updated_at();
     - fetch_data();
     - clean_data();
+    - process_and_send_df_to_next_step();
     - process_and_upload_to_s3();
     - run()
 - state/last_update_{endpoint}.json: Arquivo que armazena a última data/hora de atualização (formato ISO 8601 com Z no final). Se este arquivo não existir (ou estiver inválido), o script faz Full Load.
@@ -37,15 +43,20 @@ Caso não exista histórico de execução (primeira vez), é feita uma carga com
 ### Variáveis do step para configuração:
     
   - endpoint: Endpoint que irá ser extraído os dados
-  - input_type: Tipo de input que o step irá receber, selecionar entre: from_incoming_variable e from_step_param
+  - input_type: Tipo de input que o step irá receber, selecionar entre: from_incoming_variable ou from_step_param
       se input_type = "from_incoming_variable"
           - incoming_variable_name: Adicionar nome da variável do step anterior
+          - data_extracao: Adicionar a Data inicial que deseja fazer a extração dos dados no formato "YYYY-MM-DD", Exemplo de formato: "2025-01-01"
       se input_type = "from_step_param"
           - cod_cli_sponte: Adicionar os códigos de clientes Sponte que vão ser extraídos. Pode ser 1 código ou vários, por exemplo: 123, 124, 125*
               * Se for mais de 1 código, separar por vírgulas
           - data_extracao: Adicionar a Data inicial que deseja fazer a extração dos dados no formato "YYYY-MM-DD", Exemplo de formato: "2025-01-01"
-  - bucket_name: Bucket do S3 onde vão ser carregado os arquivos
-  - prefix: prefixo de pastas onde vão ser carregado os arquivos dentro do bucket. Exemplo: "Sponte/incremental/endpoint"
+  - output_type: Tipo de output que o step irá realizar, selecionar entre: send_dataframe_to_next_step ou upload_to_s3
+      se output_type = "send_dataframe_to_next_step"
+          - outgoing_variable_name: Nome da variável que irá passar um DataFrame pandas para uma variável de saída do step.
+      se output_type = "upload_to_s3"
+          - bucket_name: Bucket do S3 onde vão ser carregado os arquivos
+          - prefix: prefixo de pastas onde vão ser carregado os arquivos dentro do bucket. Exemplo: "Sponte/incremental/endpoint"
   
 ### Como Funciona o Fluxo
 
@@ -62,8 +73,10 @@ Caso não exista histórico de execução (primeira vez), é feita uma carga com
 
 3. Processamento e Salvamento
 
-- Todos os leads são acumulados em `all_data`.
-- O script converte a lista de dicionários em um arquivo Parquet e grava no bucket S3 informado nas configurações do step.
+- Todos os dados são acumulados em `all_data`.
+- O script converte a lista de dicionários e verifica o dado passo no step param "output_type": 
+   se output_type = "upload_to_s3" - O Step salva um arquivo Parquet e grava no bucket S3 informado nas configurações do step.
+   se output_type = "send_dataframe_to_next_step" - O Step cria um dataframe a partir da lista de dicionários e passa essa lista como variável para um próximo step.
 
 4. Atualização do `last_update`
 
@@ -83,7 +96,7 @@ Caso não exista histórico de execução (primeira vez), é feita uma carga com
 
 2. Configure as Variáveis
 
-- Ajuste os valores obrigatórios do step.
+- Ajuste os valores obrigatórios do step. Verifique as duas abas ("Main Configuration" e "Input Configuration")
 - Defina o api_key válido na Sponte.
 - Ajuste LAST_UPDATE_PATH, se desejar um caminho diferente (padrão: state/last_update_{endpoint}.json).
 
@@ -95,7 +108,7 @@ Caso não exista histórico de execução (primeira vez), é feita uma carga com
 
 ### Pontos de Atenção
 1. Lista de Códigos Sponte
-- Caso precise de uma lista de códigos da Sponte dinâmica, precisar informar a Dadosfera para desenvolvimento. Se precisar de códigos específicos, o step atende.
+- Caso precise de uma lista de códigos da Sponte dinâmica, precisa informar a Dadosfera para desenvolvimento. Se precisar de códigos específicos, o step atende.
 
 2. Número de Registros
 
@@ -103,7 +116,7 @@ Caso não exista histórico de execução (primeira vez), é feita uma carga com
 
 3. Persistência
 
-- Após obter os dados, você pode salvá-los em um caminho AWS S3 no formato Parquet.
+- Após obter os dados, você pode salvá-los em um caminho AWS S3 no formato Parquet ou passar os dados como Dataframe para um próximo step.
 
 4. Erros e Exceções
 
