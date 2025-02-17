@@ -7,9 +7,9 @@ Este passo (step) realiza a coleta de dados a partir da API da Sponte, respeitan
 ### Visão Geral
 este conector interage com o endpoint:
 
-'''
+```
     GET https://sponte-bi.sponteweb.com.br/api/v1/extracoes/{endpoint}
-'''
+```
 
 Respeitando:
 
@@ -17,11 +17,7 @@ Respeitando:
 - Filtro incremental através da DataExtracao, que trás somente dados atualizados a partir de uma data da última requisição.
 - O(s) código(s) do Cliente Sponte passados na configuração do step.
 
-Caso não exista histórico de execução (primeira vez), é feita uma carga completa (full load), coletando todos os registros disponíveis do endpoint a partir da "DataExtracao" informada no formulário do Step. Em execuções subsequentes, o script obtém apenas os registros que foram atualizados após a última data registrada.
-
-### Exemplo de Requisição
-
-
+Caso não exista histórico de execução (primeira vez), é feita uma carga completa (full load), coletando todos os registros disponíveis do endpoint a partir da "Data Extracao" informada no formulário do Step. Em execuções subsequentes, o script obtém apenas os registros que foram atualizados após a última data registrada.
 
 ### Arquivos e Variáveis Principais
 
@@ -33,13 +29,13 @@ Caso não exista histórico de execução (primeira vez), é feita uma carga com
     - clean_data();
     - process_and_send_df_to_next_step();
     - process_and_upload_to_s3();
-    - run()
+    - run().
 - state/last_update_{endpoint}.json: Arquivo que armazena a última data/hora de atualização (formato ISO 8601 com Z no final). Se este arquivo não existir (ou estiver inválido), o script faz Full Load.
 
 ### Variáveis de Ambiente para configuração:
-    
-    - api_key: x-api-key da conexão Sponte do cliente.
-    
+
+- api_key: x-api-key da conexão Sponte do cliente.
+
 ### Variáveis do step para configuração:
     
   - endpoint: Endpoint que irá ser extraído os dados
@@ -141,7 +137,7 @@ Caso não exista histórico de execução (primeira vez), é feita uma carga com
 - Defina o api_key válido na Sponte.
 - Ajuste LAST_UPDATE_PATH, se desejar um caminho diferente (padrão: state/last_update_{endpoint}.json).
 
-4. Rode o Script
+3. Rode o Script
 
 - Na primeira execução, o script não encontrará state/last_update_{endpoint}.json e fará o full load a partir da DataExtracao fornecida.
 - Ao final, criará (ou atualizará) o arquivo state/last_update_{endpoint}.json com o maior updated_at.
@@ -149,6 +145,7 @@ Caso não exista histórico de execução (primeira vez), é feita uma carga com
 
 ### Pontos de Atenção
 1. Lista de Códigos Sponte
+
 - Caso precise de uma lista de códigos da Sponte dinâmica, precisa informar a Dadosfera para desenvolvimento. Se precisar de códigos específicos, o step atende.
 
 2. Número de Registros
