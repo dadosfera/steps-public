@@ -26,14 +26,14 @@ LAST_UPDATE_PATH = f"state/last_update_{endpoint}.json"
 # Set URL
 URL = f"https://sponte-bi.sponteweb.com.br/api/v1/extracoes/{endpoint}"
 
-# Cálculo da quantidade máxima de requisições por step
+# Calculation of the maximum number of requests per step
 with open("main.orchest", "r", encoding="utf-8") as file:
     json_data = json.load(file)
     
 # Count occurrences of "get_sponte_data.py"
 count_of_steps = sum(1 for step in json_data["steps"].values() if step.get("file_path") == "get_sponte_data.py")
 
-# Cálculo para o Máximo de requesições da API
+# Calculation for Maximum API Requests
 MAX_REQ_PER_MINUTE = 1000/count_of_steps
 MAX_REQ_PER_MINUTE = math.floor(MAX_REQ_PER_MINUTE)
 
@@ -115,7 +115,7 @@ class SponteAPI:
                     if not max_dt or dt > max_dt:
                         max_dt = dt_utc
                 except ValueError:
-                    # Caso o formato não seja compatível, ignora e segue
+                    # If the format is not compatible, ignore and continue
                     self.logger.info(f"[find_max_updated_at] Formato inválido: {formatted_date}")
                     pass
         if max_dt:
@@ -140,11 +140,11 @@ class SponteAPI:
             }
             try:
                 response = requests.get(URL, headers=headers, params=params)
-                response.raise_for_status()  # Verifica se houve erro HTTP
+                response.raise_for_status()  # Check if there was an HTTP error
                 data = response.json()
                 status_code = response.status_code
 
-                # Log da resposta do servidor
+                # Server response log
                 self.logger.info(f"Response for CodCliSponte {cod_cli_sponte}: CurrentPage({data['currentPage']}), TotalPages({data['totalPages']}), StatusCode:{status_code})")
                 all_items.extend(data['items'])
 
@@ -156,7 +156,7 @@ class SponteAPI:
                     time.sleep(60)
                     count=0
 
-                # Verifica se há mais páginas
+                # Check for more pages
                 if not data.get('hasNext'):
                     break
                 page_number += 1
@@ -172,7 +172,7 @@ class SponteAPI:
         return all_items, count
 
     def clean_data(self, data):
-        # Função para remover caracteres ilegais de strings
+        # Function to remove illegal characters from strings
         illegal_chars = re.compile(r'[<>:"/\\|?*\x00-\x1F]')
         for item in data:
             for key in item.keys():
@@ -242,14 +242,14 @@ class SponteAPI:
             else:
                 self.logger.info("[run] FULL LOAD - Nenhum 'last_update' encontrado")
 
-            # Chamada da API de todas as filiais
+            # API call from all codes
             for cod_cli in sponte_code_list:
                 self.logger.info(f'[run] Fetching data for CodCliSponte: {cod_cli}')
                 data, count = self.fetch_data(cod_cli, data_extracao, api_key, count) # Call function
                 all_data.extend(data)
             self.logger.info(f'[run] Total de registros coletados: {len(all_data)}')
 
-            # Limpa os dados
+            # Clean data
             if all_data:
                 cleaned_data = self.clean_data(all_data)
                 self.logger.info(f"[run] Todos os dados limpos.")
@@ -314,6 +314,8 @@ def script_handler():
     config = json.loads(config_json)
 
     api_key = config.get("api_key")
+    sponte_code_list = config.get("sponte_code_list")
+    data_extracao = config.get("data_extracao")
 
     if not api_key:
         raise ValueError(

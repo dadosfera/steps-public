@@ -43,21 +43,62 @@ Caso não exista histórico de execução (primeira vez), é feita uma carga com
 ### Variáveis do step para configuração:
     
   - endpoint: Endpoint que irá ser extraído os dados
+
   - input_type: Tipo de input que o step irá receber, selecionar entre: from_incoming_variable ou from_step_param
-      se input_type = "from_incoming_variable"
-          - incoming_variable_name: Adicionar nome da variável do step anterior
-          - data_extracao: Adicionar a Data inicial que deseja fazer a extração dos dados no formato "YYYY-MM-DD", Exemplo de formato: "2025-01-01"
-      se input_type = "from_step_param"
-          - cod_cli_sponte: Adicionar os códigos de clientes Sponte que vão ser extraídos. Pode ser 1 código ou vários, por exemplo: 123, 124, 125*
-              * Se for mais de 1 código, separar por vírgulas
-          - data_extracao: Adicionar a Data inicial que deseja fazer a extração dos dados no formato "YYYY-MM-DD", Exemplo de formato: "2025-01-01"
+    - se input_type = "from_incoming_variable"
+        - incoming_variable_name: Adicionar nome da variável do step anterior
+        - data_extracao: Adicionar a Data inicial que deseja fazer a extração dos dados no formato "YYYY-MM-DD", Exemplo de formato: "2025-01-01"
+    - se input_type = "from_step_param"
+        - cod_cli_sponte: Adicionar os códigos de clientes Sponte que vão ser extraídos. Pode ser 1 código ou vários, por exemplo: 123, 124, 125 (Se for mais de 1 código, separar por vírgulas)
+        - data_extracao: Adicionar a Data inicial que deseja fazer a extração dos dados no formato "YYYY-MM-DD", Exemplo de formato: "2025-01-01"
+
   - output_type: Tipo de output que o step irá realizar, selecionar entre: send_dataframe_to_next_step ou upload_to_s3
-      se output_type = "send_dataframe_to_next_step"
-          - outgoing_variable_name: Nome da variável que irá passar um DataFrame pandas para uma variável de saída do step.
-      se output_type = "upload_to_s3"
-          - bucket_name: Bucket do S3 onde vão ser carregado os arquivos
-          - prefix: prefixo de pastas onde vão ser carregado os arquivos dentro do bucket. Exemplo: "Sponte/incremental/endpoint"
-  
+    - se output_type = "send_dataframe_to_next_step"
+        - outgoing_variable_name: Nome da variável que irá passar um DataFrame pandas para uma variável de saída do step.
+    - se output_type = "upload_to_s3"
+        - bucket_name: Bucket do S3 onde vão ser carregado os arquivos
+        - prefix: prefixo de pastas onde vão ser carregado os arquivos dentro do bucket. Exemplo: "Sponte/incremental/endpoint"
+
+### Exemplo de preenchimento dos paramêtros:
+- Passo 1 (Aba Main Configuration):
+    - Digitar o endpoint;
+    - Selecionar o Input Type;
+    - Selecionar o Output Type.
+
+- Digitar o endpoint
+
+![alt text](assets/params.png)
+
+- Selecionar o Input Type
+
+![alt text](assets/input-type.png)
+
+- Selecionar o Output Type 
+
+![alt text](assets/output-type.png)
+
+- Passo 2 (Aba Input Configuration):
+    - se input_type = "from_incoming_variable"
+        - Incoming Variable Name: Adicionar nome da variável do step anterior
+        - Extraction Date: Adicionar a Data inicial que deseja fazer a extração dos dados no formato "YYYY-MM-DD", Exemplo de formato: "2025-01-01"
+![alt text](assets/input-configuration-from-variable.png)
+
+    - se input_type = "from_step_param"
+        - Extraction Date: Adicionar a Data inicial que deseja fazer a extração dos dados no formato "YYYY-MM-DD", Exemplo de formato: "2025-01-01"
+        - Client Code (Sponte): Adicionar os códigos de clientes Sponte que vão ser extraídos. Pode ser 1 código ou vários, por exemplo: 123, 124, 125 (Se for mais de 1 código, separar por vírgulas)
+![alt text](assets/input-configuration-from-step.png)
+
+- Passo 3 (Aba Input Configuration):
+    - se output_type = "send_dataframe_to_next_step"
+        - Outgoing Variable Name: Nome da variável que irá passar um DataFrame pandas para uma variável de saída do step.
+![alt text](assets/outgoing-variable-name.png)
+
+    - se output_type = "upload_to_s3"
+        - Bucket Name: Bucket do S3 onde vão ser carregado os arquivos
+        - Prefix: prefixo de pastas onde vão ser carregado os arquivos dentro do bucket. Exemplo: "Sponte/incremental/endpoint"
+![alt text](assets/output-send-to-s3.png)
+
+
 ### Como Funciona o Fluxo
 
 1. Verificação do Arquivo de Histórico (last_update.json)
@@ -75,8 +116,8 @@ Caso não exista histórico de execução (primeira vez), é feita uma carga com
 
 - Todos os dados são acumulados em `all_data`.
 - O script converte a lista de dicionários e verifica o dado passo no step param "output_type": 
-   se output_type = "upload_to_s3" - O Step salva um arquivo Parquet e grava no bucket S3 informado nas configurações do step.
-   se output_type = "send_dataframe_to_next_step" - O Step cria um dataframe a partir da lista de dicionários e passa essa lista como variável para um próximo step.
+    - se output_type = "upload_to_s3" - O Step salva um arquivo Parquet e grava no bucket S3 informado nas configurações do step.
+    - se output_type = "send_dataframe_to_next_step" - O Step cria um dataframe a partir da lista de dicionários e passa essa lista como variável para um próximo step.
 
 4. Atualização do `last_update`
 
@@ -86,7 +127,7 @@ Caso não exista histórico de execução (primeira vez), é feita uma carga com
 5. Execução Futura
 
 - Na próxima execução, a função `get_last_update()` encontra esse valor
-    → o script busca apenas registros atualizados após esse timestamp, reduzindo a carga e tempo de processamento, realizando somente carga incremental.
+    - o script busca apenas registros atualizados após esse timestamp, reduzindo a carga e tempo de processamento, realizando somente carga incremental.
     
 ### Como Executar
 
