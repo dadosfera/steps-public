@@ -15,7 +15,7 @@ Ele pode ser executado de duas formas:
 Para executar esse step é necessário buildar o Environment a seguir:  
 ```
 aws codeartifact login --tool pip --domain dadosfera --domain-owner 611330257153 --region us-east-1 --repository dadosfera-pip
-pip3 install dadosfera==1.7.0 dadosfera_logs==1.0.3
+pip3 install dadosfera==1.16.0 dadosfera_logs==1.0.3
 # Instalar pacotes de manipulação de PDFs
 pip install PyPDF2
 # Atualizar pacotes essenciais para requisições
