@@ -29,12 +29,12 @@ pip install --upgrade "deeplake[enterprise]"
 pip install --upgrade openai
 ```
 
-### Parâmetros Main Configuration:
+### Parâmetros [Main Configuration](./main_configuration.png):
 - **Bucket Name**: Nome do S3 localizado dentro da INFRA (ex: dadosfera-landing-dadosferademo-prd-us-east-1-611330257153)
 
-- **Prefix**: Localização do path que salvará os arquivos.
+- **Prefix**: Localização do path que salvará os arquivos (ex: assistente-ddf-treinamento/context_txt/content)
 
 - **Input Type**: `from_incoming_variable` para usar dados processado na pipeline ou `from_filepath` para buscar os dados no código fonte
 
-### Parâmetros Input Configuration:
+### Parâmetros [Input Configuration](./input_configuration.png):
 Se Input Type selecionado foi `from_filepath` deve ser passado o path de todos os arquivos no código fonte que será salvo no S3.
