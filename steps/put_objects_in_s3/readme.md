@@ -36,5 +36,5 @@ pip install --upgrade openai
 
 - **Input Type**: `from_incoming_variable` para usar dados processado na pipeline ou `from_filepath` para buscar os dados no código fonte
 
-### Parâmetros Main Configuration:
-Se Input Type foi selecionado `from_filepath` deve ser passado o path de todos os arquivos no código fonte que será salvo no S3
+### Parâmetros Input Configuration:
+Se Input Type selecionado foi `from_filepath` deve ser passado o path de todos os arquivos no código fonte que será salvo no S3.
