@@ -11,6 +11,8 @@ import math
 from datetime import datetime, timezone
 import boto3
 from io import BytesIO
+import pyarrow as pa
+import pyarrow.parquet as pq
 
 ORCHEST_STEP_UUID = os.environ.get('ORCHEST_STEP_UUID')
 
@@ -24,16 +26,16 @@ endpoint = orchest.get_step_param('endpoint')
 LAST_UPDATE_PATH = f"state/last_update_{endpoint}.json"
 
 # Set URL
-URL = f"https://sponte-bi.sponteweb.com.br/api/v1/extracoes/{endpoint}"
+url = f"https://sponte-bi.sponteweb.com.br/api/v1/extracoes/{endpoint}"
 
-# Calculation of the maximum number of requests per step
+# Cálculo da quantidade máxima de requisições por step
 with open("main.orchest", "r", encoding="utf-8") as file:
     json_data = json.load(file)
     
 # Count occurrences of "get_sponte_data.py"
 count_of_steps = sum(1 for step in json_data["steps"].values() if step.get("file_path") == "get_sponte_data.py")
 
-# Calculation for Maximum API Requests
+# Cálculo para o Máximo de requesições da API
 MAX_REQ_PER_MINUTE = 1000/count_of_steps
 MAX_REQ_PER_MINUTE = math.floor(MAX_REQ_PER_MINUTE)
 
@@ -46,6 +48,31 @@ class SponteAPI:
         self.logger = logger
         self.api_key = api_key
 
+
+    # Load schema from JSON file
+    def load_schema_from_file(self, entity_name, schema_file="schemas/schemas.json"):
+        with open(schema_file, "r") as f:
+            schemas = json.load(f)
+
+        if entity_name not in schemas:
+            raise ValueError(f"Schema for entity '{entity_name}' not found in file.")
+
+        # Convert JSON structure to PyArrow schema
+        fields = []
+        type_mapping = {
+            "int64": pa.int64(),
+            "int8": pa.int8(),
+            "float64": pa.float64(),
+            "string": pa.string(),
+            "timestamp[ns]": pa.timestamp("ns")
+        }
+
+        for column, dtype in schemas[entity_name].items():
+            if dtype not in type_mapping:
+                raise ValueError(f"Unsupported type '{dtype}' in schema for '{column}'.")
+            fields.append((column, type_mapping[dtype]))
+
+        return pa.schema(fields)
         
     def get_last_update(self):
         """
@@ -115,7 +142,7 @@ class SponteAPI:
                     if not max_dt or dt > max_dt:
                         max_dt = dt_utc
                 except ValueError:
-                    # If the format is not compatible, ignore and continue
+                    # Caso o formato não seja compatível, ignora e segue
                     self.logger.info(f"[find_max_updated_at] Formato inválido: {formatted_date}")
                     pass
         if max_dt:
@@ -139,12 +166,12 @@ class SponteAPI:
                 'PageNumber': page_number
             }
             try:
-                response = requests.get(URL, headers=headers, params=params)
-                response.raise_for_status()  # Check if there was an HTTP error
+                response = requests.get(url, headers=headers, params=params)
+                response.raise_for_status()  # Verifica se houve erro HTTP
                 data = response.json()
                 status_code = response.status_code
 
-                # Server response log
+                # Log da resposta do servidor
                 self.logger.info(f"Response for CodCliSponte {cod_cli_sponte}: CurrentPage({data['currentPage']}), TotalPages({data['totalPages']}), StatusCode:{status_code})")
                 all_items.extend(data['items'])
 
@@ -156,7 +183,7 @@ class SponteAPI:
                     time.sleep(60)
                     count=0
 
-                # Check for more pages
+                # Verifica se há mais páginas
                 if not data.get('hasNext'):
                     break
                 page_number += 1
@@ -172,8 +199,8 @@ class SponteAPI:
         return all_items, count
 
     def clean_data(self, data):
-        # Function to remove illegal characters from strings
-        illegal_chars = re.compile(r'[<>:"/\\|?*\x00-\x1F]')
+        # Função para remover caracteres ilegais de strings
+        illegal_chars = re.compile(r'[<>:"/\\|?*\x00-\x1F\x7F]')
         for item in data:
             for key in item.keys():
                 if isinstance(item[key], str):
@@ -188,29 +215,50 @@ class SponteAPI:
             self.logger.info("Nenhum dado para processar.")
             return
         orchest.output(df_sponte, name=outgoing_variable_name)
-        self.logger.info(f"[process_and_send_df_to_next_step] Dataframe exportado para variável '{outgoing_variable_name}' com sucesso.")
+        self.logger.info(f"[process_and_send_to_next_step] Dataframe exportado para variável '{outgoing_variable_name}' com sucesso.")
         
     def process_and_upload_to_s3(self, data, bucket_name, prefix):
         """Converts data to a DataFrame, splits by 'DataExtracao', and uploads each split file to S3."""
         client = boto3.client('s3', region_name='us-east-1')
         df = pd.DataFrame(data)
+        schema = self.load_schema_from_file(entity_name=endpoint)
 
-        # Ensure 'DataExtracao' is in datetime format
-        df['DataExtracao'] = pd.to_datetime(df['DataExtracao'], errors='coerce')
+        for field in schema:
+            col_name = field.name
+            col_type = field.type
 
-        # Group by 'DataExtracao' and upload each group to S3
+            if col_name in df.columns:
+                if pa.types.is_integer(col_type):
+                    df[col_name] = pd.to_numeric(df[col_name], errors='coerce').astype('Int64')
+                elif pa.types.is_floating(col_type):
+                    df[col_name] = pd.to_numeric(df[col_name], errors='coerce').astype(float)
+                elif pa.types.is_boolean(col_type):
+                    df[col_name] = df[col_name].astype(bool)
+                elif pa.types.is_timestamp(col_type):
+                    df[col_name] = pd.to_datetime(df[col_name], errors='coerce')
+                else:
+                    df[col_name] = df[col_name].astype('string')  
+
+                
+
+        df['DataExtracao'] = pd.to_datetime(df['DataExtracao'], errors='coerce').dt.floor('s')
+
         for date, group in df.groupby(df['DataExtracao'].dt.date):
-            date_str = date.strftime("%Y-%m-%d")
-            file_name = f"{endpoint}_{date_str}.parquet"
+            file_name = f"{endpoint}_{date}.parquet"
             s3_output_path = f"{prefix}/{file_name}"
 
-            # Save to a buffer
             buffer = BytesIO()
-            group.to_parquet(buffer, index=False)
+            
+            schema = self.load_schema_from_file(entity_name=endpoint)
+            
+            table = pa.Table.from_pandas(group, schema=schema, preserve_index=False)
 
-            # Upload to S3
+            pq.write_table(table, buffer)
+
             buffer.seek(0)
+            
             client.upload_fileobj(buffer, bucket_name, s3_output_path)
+
 
             self.logger.info(f"Uploaded split file to s3://{bucket_name}/{s3_output_path}")
             
@@ -242,14 +290,14 @@ class SponteAPI:
             else:
                 self.logger.info("[run] FULL LOAD - Nenhum 'last_update' encontrado")
 
-            # API call from all codes
+            # Chamada da API de todas as filiais
             for cod_cli in sponte_code_list:
                 self.logger.info(f'[run] Fetching data for CodCliSponte: {cod_cli}')
                 data, count = self.fetch_data(cod_cli, data_extracao, api_key, count) # Call function
                 all_data.extend(data)
             self.logger.info(f'[run] Total de registros coletados: {len(all_data)}')
 
-            # Clean data
+            # Limpa os dados
             if all_data:
                 cleaned_data = self.clean_data(all_data)
                 self.logger.info(f"[run] Todos os dados limpos.")
@@ -314,8 +362,6 @@ def script_handler():
     config = json.loads(config_json)
 
     api_key = config.get("api_key")
-    sponte_code_list = config.get("sponte_code_list")
-    data_extracao = config.get("data_extracao")
 
     if not api_key:
         raise ValueError(

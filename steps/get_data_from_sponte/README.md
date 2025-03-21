@@ -29,8 +29,10 @@ Caso não exista histórico de execução (primeira vez), é feita uma carga com
     - clean_data();
     - process_and_send_df_to_next_step();
     - process_and_upload_to_s3();
+    - load_schema_from_file();
     - run().
 - state/last_update_{endpoint}.json: Arquivo que armazena a última data/hora de atualização (formato ISO 8601 com Z no final). Se este arquivo não existir (ou estiver inválido), o script faz Full Load.
+- schemas/schemas.json: Arquivo que armazena todos os schemas pré setados para todos as entidades(endpoints).
 
 ### Variáveis de Ambiente para configuração:
 
@@ -111,7 +113,8 @@ Caso não exista histórico de execução (primeira vez), é feita uma carga com
 3. Processamento e Salvamento
 
 - Todos os dados são acumulados em `all_data`.
-- O script converte a lista de dicionários e verifica o dado passo no step param "output_type": 
+- O script converte a lista de dicionários e passa pela função `load_schema_from_file` para normalizar todos os schemas dos dados.
+- Com os schemas padronizados, o conector verifica o dado que está no step param "output_type": 
     - se output_type = "upload_to_s3" - O Step salva um arquivo Parquet e grava no bucket S3 informado nas configurações do step.
     - se output_type = "send_dataframe_to_next_step" - O Step cria um dataframe a partir da lista de dicionários e passa essa lista como variável para um próximo step.
 
