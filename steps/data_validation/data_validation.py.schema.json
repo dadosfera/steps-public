@@ -1,0 +1,74 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Schema de Inserir novos registros",
+  "type": "object",
+  "properties": {
+    "email": {
+      "type": "string",
+      "format": "email",
+      "maxLength": 254
+    },
+    "first_name": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 100
+    },
+    "surname": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 100
+    },
+    "company": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 150
+    },
+    "mobile_phone": {
+      "type": "string",
+      "pattern": "^(\\+?\\d{1,3}[-. ]?)?(\\(?\\d{1,4}\\)?[-. ]?)(\\d{1,4}[-. ]?\\d{1,4}[-. ]?\\d{1,9})$",
+      "maxLength": 20
+    },
+    "birth_date": {
+      "type": ["string", "null"],
+      "format": "date"
+    },
+    "site": {
+      "type": ["string", "null"],
+      "format": "uri",
+      "maxLength": 2083
+    },
+    "owner": {
+      "type": ["string", "null"],
+      "minLength": 2,
+      "maxLength": 150
+    },
+    "display_name": {
+      "type": ["string", "null"],
+      "minLength": 2,
+      "maxLength": 150
+    },
+    "business_address": {
+      "type": ["string", "null"],
+      "maxLength": 300
+    },
+    "middle_name": {
+      "type": ["string", "null"],
+      "maxLength": 100
+    },
+    "id": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    },
+    "email_index": {
+      "type": ["string", "null"],
+      "minimum": 0
+    },
+    "business_phones": {
+      "type": ["string", "null"],
+      "pattern": "^(\\+?\\d{1,3}[-. ]?)?(\\(?\\d{1,4}\\)?[-. ]?)(\\d{1,4}[-. ]?\\d{1,4}[-. ]?\\d{1,9})$",
+      "maxLength": 20
+    }
+  },
+  "required": ["email", "first_name", "surname", "company", "mobile_phone"],
+  "additionalProperties": false
+}
