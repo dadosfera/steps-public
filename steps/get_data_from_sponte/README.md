@@ -16,6 +16,21 @@ Respeitando:
 - Limite de 1000 requisições por minuto, separados por todos os endpoints e fazendo o cálculo automático de máximo de requisições por step no módulo.
 - Filtro incremental através da DataExtracao, que trás somente dados atualizados a partir de uma data da última requisição.
 - O(s) código(s) do Cliente Sponte passados na configuração do step.
+### Interação com os Códigos de Cliente Sponte
+
+Os códigos de cliente Sponte (CodCliSponte) são a base para o funcionamento deste conector. Esses códigos identificam as entidades/organizações no sistema Sponte para as quais você deseja coletar dados. Cada requisição à API usa este código como parâmetro de filtro para retornar apenas os dados relacionados àquela entidade específica.
+
+#### Como funciona:
+1. **Identificação do cliente**: Cada código representa um cliente ou unidade organizacional no sistema Sponte.
+2. **Filtragem de dados**: O código é usado na chamada da API como um parâmetro obrigatório para filtrar os dados.
+3. **Múltiplos códigos**: É possível processar vários códigos em uma única execução, fornecendo-os separados por vírgula na configuração (ex: "123, 124, 125").
+4. **Processamento sequencial**: O step percorre cada código do cliente e coleta todos os dados disponíveis antes de passar para o próximo código.
+
+#### Exemplo prático:
+Para uma rede de escolas com 3 unidades que possuem os códigos "123", "124" e "125" no sistema Sponte:
+- Ao configurar `cod_cli_sponte: "123, 124, 125"`, o conector fará requisições separadas para cada código.
+- Para cada código, o conector coletará todos os dados disponíveis (respeitando a paginação da API).
+- Ao final, todos os dados de todos os códigos serão combinados antes do processamento final e da entrega do resultado.
 
 Caso não exista histórico de execução (primeira vez), é feita uma carga completa (full load), coletando todos os registros disponíveis do endpoint a partir da "Data Extracao" informada no formulário do Step. Em execuções subsequentes, o script obtém apenas os registros que foram atualizados após a última data registrada.
 
