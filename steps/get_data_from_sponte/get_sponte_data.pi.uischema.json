@@ -1,87 +1,171 @@
 {
-    "type": "Categorization",
-    "elements": [
-      {
-        "type": "Category",
-        "label": "Main Configuration",
-        "elements": [
-          {
-            "type": "HorizontalLayout",
-            "elements": [
-              {
-                "type": "Control",
-                "scope": "#/properties/bucket_name",
-                "label": "Bucket Name"
+  "type": "Categorization",
+  "elements": [
+    {
+      "type": "Category",
+      "label": "Main Configuration",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/endpoint",
+              "label": "Endpoint"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/input_type",
+              "label": "Input Type"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/output_type",
+              "label": "Output Type"
+            }
+          ]
+        },
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/is_historical_load",
+              "label": "Historical Load",
+              "options": {
+                "toggle": true
               }
-            ]
-          },
-          {
-            "type": "HorizontalLayout",
-            "elements": [
-              {
-                "type": "Control",
-                "scope": "#/properties/prefix",
-                "label": "Prefix"
-              }
-            ]
-          },
-          {
-            "type": "HorizontalLayout",
-            "elements": [
-              {
-                "type": "Control",
-                "scope": "#/properties/input_type",
-                "label": "Input Type"
-              }
-            ]
-          },
-          {
-            "type": "HorizontalLayout",
-            "elements": [
-              {
-                "type": "Control",
-                "scope": "/properties/cod_cli_sponte",
-                "label": "Client Code (Sponte)"
-              }
-            ]
-          },
-          {
-            "type": "HorizontalLayout",
-            "elements": [
-              {
-                "type": "Control",
-                "scope": "/properties/data_extracao",
-                "label": "Extraction Date"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "type": "Category",
-        "label": "Input Configuration",
-        "elements": [
-          {
-            "type": "HorizontalLayout",
-            "elements": [
-              {
-                "type": "Control",
-                "scope": "#/properties/incoming_variable_name",
-                "label": "Incoming Variable Name"
-              }
-            ],
-            "rule": {
-              "effect": "SHOW",
-              "condition": {
-                "scope": "#/properties/input_type",
-                "schema": {
-                  "const": "from_incoming_variable"
-                }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Category",
+      "label": "Input Configuration",
+      "elements": [
+        {
+          "type": "VerticalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/incoming_variable_name",
+              "label": "Incoming Variable Name"
+            }
+          ],
+          "rule": {
+            "effect": "SHOW",
+            "condition": {
+              "scope": "#/properties/input_type",
+              "schema": {
+                "const": "from_incoming_variable"
               }
             }
           }
-        ]
+        },
+        {
+          "type": "VerticalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/outgoing_variable_name",
+              "label": "Outgoing Variable Name"
+            }
+          ],
+          "rule": {
+            "effect": "SHOW",
+            "condition": {
+              "scope": "#/properties/output_type",
+              "schema": {
+                "const": "send_dataframe_to_next_step"
+              }
+            }
+          }
+        },
+        {
+          "type": "VerticalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/data_extracao",
+              "label": "Extraction Date"
+            }
+          ],
+          "rule": {
+            "effect": "SHOW",
+            "condition": {
+              "scope": "#/properties/input_type",
+              "schema": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        {
+          "type": "VerticalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/cod_cli_sponte",
+              "label": "Client Code (Sponte)"
+            }
+          ],
+          "rule": {
+            "effect": "SHOW",
+            "condition": {
+              "scope": "#/properties/input_type",
+              "schema": {
+                "const": "from_step_param"
+              }
+            }
+          }
+        },
+        {
+          "type": "VerticalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/bucket_name",
+              "label": "Bucket Name"
+            },
+            {
+              "type": "Control",
+              "scope": "#/properties/prefix",
+              "label": "Prefix"
+            }
+          ],
+          "rule": {
+            "effect": "SHOW",
+            "condition": {
+              "scope": "#/properties/output_type",
+              "schema": {
+                "const": "upload_to_s3"
+              }
+            }
+          }
+        }
+      ],
+      "rule": {
+        "effect": "SHOW",
+        "condition": {
+          "scope": "#/properties/endpoint",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
       }
-    ]
-  }
-  
+    }
+  ]
+}

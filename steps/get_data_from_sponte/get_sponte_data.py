@@ -64,7 +64,7 @@ class SponteAPI:
             "int8": pa.int8(),
             "float64": pa.float64(),
             "string": pa.string(),
-            "timestamp[ns]": pa.timestamp("ns")
+            "timestamp[ns]": pa.timestamp("ns", tz=None)
         }
 
         for column, dtype in schemas[entity_name].items():
@@ -235,13 +235,13 @@ class SponteAPI:
                 elif pa.types.is_boolean(col_type):
                     df[col_name] = df[col_name].astype(bool)
                 elif pa.types.is_timestamp(col_type):
-                    df[col_name] = pd.to_datetime(df[col_name], errors='coerce')
+                    df[col_name] = pd.to_datetime(df[col_name], errors='coerce').astype('datetime64[ns]')
                 else:
                     df[col_name] = df[col_name].astype('string')  
 
                 
 
-        df['DataExtracao'] = pd.to_datetime(df['DataExtracao'], errors='coerce').dt.floor('s')
+        df['DataExtracao'] = pd.to_datetime(df['DataExtracao'], errors='coerce').astype('datetime64[ns]')
 
         for date, group in df.groupby(df['DataExtracao'].dt.date):
             file_name = f"{endpoint}_{date}.parquet"
@@ -262,7 +262,7 @@ class SponteAPI:
 
             self.logger.info(f"Uploaded split file to s3://{bucket_name}/{s3_output_path}")
             
-    def run(self, sponte_code_list, data_extracao, api_key):
+    def run(self, sponte_code_list, data_extracao, api_key, is_historical:bool=False):
         """
         Fluxo principal
         """
@@ -280,20 +280,20 @@ class SponteAPI:
         try:
             # Get last param date
             last_update = self.get_last_update()
-
-            if last_update:
-                self.logger.info(f"[run] INCREMENTAL a partir de updated_at={last_update}")
-                # Parse the timestamp
+            
+            if last_update and not is_historical:
                 dt = datetime.strptime(last_update, "%Y-%m-%dT%H:%M:%SZ")
                 # Format to date only
                 data_extracao = dt.strftime("%Y-%m-%d")
-            else:
-                self.logger.info("[run] FULL LOAD - Nenhum 'last_update' encontrado")
 
+                self.logger.info(f"[run] INCREMENTAL a partir de updated_at={data_extracao}")
+                
+            else:
+                self.logger.info(f"[run] FULL LOAD - Buscando dados a partir do dia {data_extracao}")
             # Chamada da API de todas as filiais
             for cod_cli in sponte_code_list:
                 self.logger.info(f'[run] Fetching data for CodCliSponte: {cod_cli}')
-                data, count = self.fetch_data(cod_cli, data_extracao, api_key, count) # Call function
+                data, count = self.fetch_data(cod_cli, data_extracao, api_key, count)
                 all_data.extend(data)
             self.logger.info(f'[run] Total de registros coletados: {len(all_data)}')
 
@@ -338,11 +338,13 @@ def orchest_handler():
     if input_type == "from_step_param":
         data_extracao = orchest.get_step_param('data_extracao')
         cod_cli_sponte = orchest.get_step_param('cod_cli_sponte')
+        is_historical = orchest.get_step_param('is_historical_load')
         sponte_code_list = [cod_cli_sponte]
 
     elif input_type == "from_incoming_variable":
         data_extracao = orchest.get_step_param('data_extracao')
         incoming_variable_name = orchest.get_step_param("incoming_variable_name")
+        is_historical = orchest.get_step_param('is_historical_load')
         # Get data from incoming steps.
         input_data = orchest.get_inputs()
         sponte_code_list = input_data[f"{incoming_variable_name}"]
@@ -352,7 +354,7 @@ def orchest_handler():
         logger=logger,
         api_key=api_key
     )
-    handler.run(sponte_code_list, data_extracao, api_key)
+    handler.run(sponte_code_list, data_extracao, api_key, is_historical=is_historical)
 
 def script_handler():
     if len(sys.argv) != 2:
