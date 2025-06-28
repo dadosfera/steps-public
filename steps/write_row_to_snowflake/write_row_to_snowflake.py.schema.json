@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Save data in snowflake",
+  "description": "Schema for use the step for save a row in a specific table in snowflake",
+  "type": "object",
+  "properties": {
+    "secret_id": {
+      "type": "string",
+      "description": "The secret id to connect to snowflake's client ",
+      "minLength": 3
+    },
+    "table_name": {
+      "type": "string",
+      "description": "The name of the table in snowflake",
+      "minLength": 1
+    }
+  },
+  "required": ["secret_id", "table_name"],
+  "additionalProperties": false
+}
