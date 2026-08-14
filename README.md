@@ -103,7 +103,8 @@ Passo a passo completo: [2. Desenvolvendo um Step](https://github.com/dadosfera/
 - [ ] Três arquivos com o *sidecar naming* correto, no mesmo diretório
 - [ ] Todo parâmetro lido no `.py` existe no `schema.json` e aparece no `uischema.json`
 - [ ] Lógica de negócio em função pura, separada dos handlers, com type hints
-- [ ] `logger` em vez de `print`; nenhum segredo no código
+- [ ] `logger` em vez de `print`; credencial via `secret_id` (AWS Secrets Manager), nunca em código, schema ou log
+- [ ] Compatível com **Python 3.8** (runtime da plataforma) — validado na imagem, não só no Python local
 - [ ] Roda local via docker compose
 - [ ] Validado em um ambiente `dadosfera-ai-oss`: formulário renderiza e execução passa
 - [ ] `README.md` do step e este catálogo atualizados
